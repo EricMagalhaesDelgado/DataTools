@@ -5,7 +5,7 @@ function app = file(hFig)
     % Create Grid
     app.Grid = uigridlayout(hFig);
     app.Grid.ColumnWidth = {'1x', 22};
-    app.Grid.RowHeight = {22, '1x', 22, '1x', 22, '0.5x'};
+    app.Grid.RowHeight = {17, '1x', 22, '1x', 22, '0.5x'};
     app.Grid.ColumnSpacing = 5;
     app.Grid.RowSpacing = 5;
 
@@ -16,10 +16,11 @@ function app = file(hFig)
     app.Tree1Label.FontWeight = 'bold';
     app.Tree1Label.Layout.Row = 1;
     app.Tree1Label.Layout.Column = 1;
-    app.Tree1Label.Text = 'Arquivo(s):';
+    app.Tree1Label.Text = 'OPENED FILES:';
 
     % Create Tree1
     app.Tree1 = uitree(app.Grid);
+    app.Tree1.FontSize = 11;
     app.Tree1.Layout.Row = 2;
     app.Tree1.Layout.Column = 1;
 
@@ -47,10 +48,11 @@ function app = file(hFig)
     app.Tree2Label.FontWeight = 'bold';
     app.Tree2Label.Layout.Row = 3;
     app.Tree2Label.Layout.Column = 1;
-    app.Tree2Label.Text = 'Fluxo(s) de dados:';
+    app.Tree2Label.Text = 'SPECTRAL DATA:';
 
     % Create Tree2
     app.Tree2 = uitree(app.Grid);
+    app.Tree2.FontSize = 11;
     app.Tree2.Layout.Row = 4;
     app.Tree2.Layout.Column = 1;
 
@@ -82,9 +84,10 @@ function app = file(hFig)
     app.MetadataLabel = uilabel(app.Grid);
     app.MetadataLabel.VerticalAlignment = 'bottom';
     app.MetadataLabel.FontSize = 11;
+    app.MetadataLabel.FontWeight = 'bold';
     app.MetadataLabel.Layout.Row = 5;
     app.MetadataLabel.Layout.Column = 1;
-    app.MetadataLabel.Text = 'Metadados:';
+    app.MetadataLabel.Text = 'METADATA:';
 
     % Create Metadata
     app.Metadata = uitextarea(app.Grid);

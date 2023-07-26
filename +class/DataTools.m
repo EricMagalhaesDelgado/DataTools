@@ -54,10 +54,22 @@ classdef DataTools < handle & dynamicprops
 
     properties
         pathToMFILE
+        
         Container
+        
         hFigDocuments
         hPanels
+        hStatusBar
+        
         hDynamicProperties = table('Size', [0, 2], 'VariableTypes', {'cell', 'cell'}, 'VariableNames', {'id', 'handle'})
+
+        % Toolstrip componentes handles
+        tool_OpenButton = struct(struct(struct(struct(struct(app.Container).TabGroupOrder).Children(1)).Children).Children).Children
+        
+        metaData = struct('File', {}, 'Type', {}, 'Data', {}, 'Samples', {}, 'Memory', {});
+        Samples  = [];
+        specData = [];
+        
         uuid
     end
     
@@ -88,6 +100,7 @@ classdef DataTools < handle & dynamicprops
             % Others properties
             this.hFigDocuments = struct(struct(this.Container).DocumentMap).serialization.values;
             this.hPanels       = struct(struct(this.Container).PanelMap).serialization.values;
+            this.hStatusBar    = struct(struct(this.Container).StatusBar).Children;
             this.uuid          = char(matlab.lang.internal.uuid());
 
             setappdata(groot, class.Constants.appName, this);
@@ -168,9 +181,20 @@ classdef DataTools < handle & dynamicprops
 
         %-----------------------------------------------------------------%
         function startupBuilding_PanelGroup(this)
-            leftPanelOptions      = struct('Tag', 'LeftPanel',  'Title', 'Spectral data', 'PermissibleRegions', 'left',  'Region', 'left');
+            leftPanelOptions      = struct('Tag', 'LeftPanel1',  'Title', 'Spectral data', 'PermissibleRegions', 'left',  'Region', 'left');
             leftPanel             = matlab.ui.internal.FigurePanel(leftPanelOptions);
-            leftPanel.Maximizable = false;
+            
+            leftPanel.Maximizable = true;
+            leftPanel.Closable    = true;
+%             leftPanel.Contextual  = true;
+
+            leftPanelOptions2      = struct('Tag', 'LeftPanel2',  'Title', 'Spectral data', 'PermissibleRegions', 'left',  'Region', 'left');
+            leftPanel2             = matlab.ui.internal.FigurePanel(leftPanelOptions2);
+            
+            leftPanel2.Maximizable = true;
+            leftPanel2.Closable    = true;
+%             leftPanel2.Contextual  = true;
+
             obj = createComponents.file(leftPanel.Figure);
             this.registerComponents(obj, 'file')
 
@@ -180,7 +204,7 @@ classdef DataTools < handle & dynamicprops
             bottomPanel = [];
             rightPanel  = [];
 
-            panelGroup  = {leftPanel, bottomPanel, rightPanel};
+            panelGroup  = {leftPanel, leftPanel2, bottomPanel, rightPanel};
             panelGroup  = panelGroup(cellfun(@(x) ~isempty(x), panelGroup));
 
             for ii = 1:numel(panelGroup)
