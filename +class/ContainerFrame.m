@@ -25,6 +25,9 @@ classdef ContainerFrame < handle & dynamicprops
     % existe a propriedade "Icon" no objeto "WebWindow", mas nada acontece... 
     % testar no R2023a.
     %    - hWindow = struct(app.Container).Window
+    %
+    % Ícones do MATLAB:
+    % C:\Program Files\MATLAB\R2022b\toolbox\shared\controllib\general\resources\toolstrip_icons
 
     % (d) O registro dos componentes, incluindo-os como propriedades do
     % app, demanda a inclusão de um prefixo. Inicialmente, inseri o nome do
@@ -57,6 +60,7 @@ classdef ContainerFrame < handle & dynamicprops
         
         Container
         
+        hWebWindow
         hFigDocuments
         hPanels
         hStatusBar
@@ -87,15 +91,16 @@ classdef ContainerFrame < handle & dynamicprops
             appContainerOptions = struct('Tag', 'AppContainer', 'Title', 'DataTools');
             this.Container = matlab.ui.container.internal.AppContainer(appContainerOptions);
 
-            % Window size & position
+            % Window size/position, and listener
             [x,y,w,h] = imageslib.internal.apputil.ScreenUtilities.getInitialToolPosition();
             set(this.Container, 'WindowBounds', [x,y,w,h], 'WindowMinSize', [640, 480]);
+            addlistener(this.Container, 'StateChanged', @this.appStateChangedCallback);
 
             % Main containers/components building
             startupBuilding_Toolstrip(this)
             startupBuilding_QuickAccessBar(this)
-            startupBuilding_FigureDocumentGroup(this)
-            startupBuilding_PanelGroup(this)
+%             startupBuilding_FigureDocumentGroup(this)
+%             startupBuilding_PanelGroup(this)
             startupBuilding_StatusBar(this)
 
             % Others properties
@@ -104,11 +109,11 @@ classdef ContainerFrame < handle & dynamicprops
             this.hStatusBar    = struct(struct(this.Container).StatusBar).Children;
             this.uuid          = char(matlab.lang.internal.uuid());
 
-            setappdata(groot, class.Constants.appName, this);
+            % Visibility
             this.Container.Visible = true;
-            
-            % Listener
-            addlistener(this.Container, 'StateChanged', @this.appStateChangedCallback);
+
+            % Register app
+            setappdata(groot, class.Constants.appName, this);
         end
 
 
@@ -132,10 +137,10 @@ classdef ContainerFrame < handle & dynamicprops
             % Hierarquia:
             % TABGROUP >> TAB >> SECTION >> COLUMN >> COMPONENTS
 
-            import matlab.ui.internal.toolstrip.*            
+            import matlab.ui.internal.toolstrip.*
             
             % Leitura do arquivo de configuração do toolstrip em JSON:
-            tempFile = jsondecode(fileread('name3.json'));            
+            tempFile = jsondecode(fileread('ConfigFile.json'));            
             
             % Criação dos objetos TAB e SECTION:
             TabStruct  = tempFile.Tab;
@@ -150,17 +155,26 @@ classdef ContainerFrame < handle & dynamicprops
                 for jj = 1:numel(SectionNames)
                     objStruct(ii).Section(jj) = objStruct(ii).Tab.addSection(SectionNames{jj});
                 end
-            end            
+            end
             
             % Criação dos componentes:
             CompTable = struct2table(tempFile.Components);
             CompTable = sortrows(CompTable, 'PositionID');
 
+            % Criação dos objetos GROUP:
+            Groups = unique(CompTable.Group);
+            GroupTable = table('Size', [0,2], 'VariableTypes', {'cell', 'cell'}, 'VariableNames', {'name', 'handle'});
+            for ii = 1:numel(Groups)
+                if ~isempty(Groups{ii})
+                    GroupTable(end+1,:) = {Groups{ii}, {ButtonGroup()}};
+                end
+            end
+
             tabGroup = TabGroup();
             tabGroup.Tag = 'myTabGroup';
             
+            idx1 = fix(CompTable.PositionID/1000);                          % Tab index
             for ii = 1:numel(TabFields)
-                idx1 = fix(CompTable.PositionID/1000);                                  % Tab index
                 tempTable_TAB = CompTable(idx1==ii,:);
             
                 SectionNames = TabStruct.(TabFields{ii});
@@ -174,14 +188,14 @@ classdef ContainerFrame < handle & dynamicprops
             
                         % ColumnWidth
                         colWidth = [];
-                        if ~strcmp(unique(tempTable_COLUMN.ColumnWidth), 'auto')
+                        if any(~strcmp(unique(tempTable_COLUMN.ColumnWidth), 'auto'))
                             colWidth = tempTable_COLUMN.ColumnWidth(cellfun(@(x) ~isnan(str2double(x)), tempTable_COLUMN.ColumnWidth));
                             colWidth = str2double(colWidth{1});
                         end
         
                         % ColumnHorizontalAlignment
                         colHorAlign = [];
-                        if ~strcmp(unique(tempTable_COLUMN.ColumnHorAlign), 'auto')
+                        if any(~strcmp(unique(tempTable_COLUMN.ColumnHorAlign), 'auto'))
                             colHorAlign = tempTable_COLUMN.ColumnHorAlign(cellfun(@(x) ~strcmp(x, 'auto'), tempTable_COLUMN.ColumnHorAlign));
                             colHorAlign = colHorAlign{1};
                         end
@@ -193,31 +207,60 @@ classdef ContainerFrame < handle & dynamicprops
                         end
 
                         for ll = 1:height(tempTable_COLUMN)
-                            switch tempTable_COLUMN.Type{ll}
-                                case 'Button';       Component = Button();
-                                case 'ToggleButton'; Component = ToggleButton();
-                                case 'Label';        Component = Label();
-                                case 'Spinner';      Component = Spinner();
-                            end
-            
                             Parameters = fields(tempTable_COLUMN.Parameters{ll});
+
+                            switch tempTable_COLUMN.Type{ll}
+                                case 'Button'
+                                    Component = Button();
+                                
+                                case 'GridPickerButton'
+                                    Component = GridPickerButton('', tempTable_COLUMN.Parameters{ll}.maxRows, tempTable_COLUMN.Parameters{ll}.maxColumns);
+                                
+                                case 'Label'
+                                    Component = Label();
+                                
+                                case 'Spinner'
+                                    Component = Spinner();
+                                
+                                case 'DropDown'
+                                    Component = DropDown(tempTable_COLUMN.Parameters{ll}.Items);
+                                
+                                case 'ToggleButton'
+                                    if isempty(tempTable_COLUMN.Group{ll})
+                                        Component = ToggleButton();
+                                    else
+                                        idx = find(strcmp(GroupTable.name, tempTable_COLUMN.Group{ll}), 1);
+                                        Component = ToggleButton('', GroupTable.handle{idx});
+                                    end
+
+                                case 'RadioButton'
+                                    idx = find(strcmp(GroupTable.name, tempTable_COLUMN.Group{ll}), 1);
+                                    Component = RadioButton(GroupTable.handle{idx});
+                            end
+                            
                             for mm = 1:numel(Parameters)
                                 ParameterValue = tempTable_COLUMN.Parameters{ll}.(Parameters{mm});
             
                                 switch Parameters{mm}
                                     case {'ButtonPushedFcn', 'ValueChangedFcn'}
-                                        ParameterValue = {str2func(ParameterValue), this};
+                                        ParameterValue = {str2func(sprintf('callbacks.%s', ParameterValue)), this};
+
                                     case 'Icon'
                                         if strcmp(ParameterValue(1:5), 'Icon.')
                                             ParameterValue = eval(ParameterValue);
                                         end
+
+                                    case {'Items', 'maxRows', 'maxColumns'}
+                                        % Properties that must be passing into the constructor
+                                        continue
                                 end
             
                                 Component.(Parameters{mm}) = ParameterValue;
                             end
                             Column.add(Component)
-            
+
                             if tempTable_COLUMN.appProperty(ll)
+                                % Registro do componente:
                                 this.registerComponents(tempTable_COLUMN.appPropertyName{ll}, Component)
                             end
                         end
@@ -315,8 +358,13 @@ classdef ContainerFrame < handle & dynamicprops
             % Os estados de um objeto "AppContainer" são definidos por uma
             % enumeração. Fluxos de estados:
             % INITIALIZING >> RUNNING >> TERMINATED
-            if this.Container.State == matlab.ui.container.internal.appcontainer.AppState.TERMINATED
-                delete(this);
+            switch this.Container.State
+                case matlab.ui.container.internal.appcontainer.AppState.RUNNING
+                    this.hWebWindow = struct(this.Container).Window;
+                    customComponents_PanelTitle(this)
+
+                case matlab.ui.container.internal.appcontainer.AppState.TERMINATED
+                    delete(this);
             end
         end
     end
@@ -332,6 +380,23 @@ classdef ContainerFrame < handle & dynamicprops
                 this.hDynamicProperties{end+1,:} = {propName, propHandle};
             end
             this.(propName) = propObj;
+        end
+
+
+        %-----------------------------------------------------------------%
+        % ## CUSTOM COMPONENTS ##
+        %-----------------------------------------------------------------%
+        function customComponents_PanelTitle(this)
+            jsCommand = sprintf(['var elements = document.querySelectorAll(''span[class="title"]'');\n' ...
+                                 'for (let ii = 0; ii < elements.length; ii++) {\n' ...
+                                 '\telements[ii].style.fontSize = "11px";\n' ...
+                                 '}\nelements = undefined;']);
+
+            pause(.001)
+            try
+                this.hWebWindow.executeJS(jsCommand);     
+            catch
+            end
         end
     end
 end

@@ -1,0 +1,792 @@
+{
+  "Tab": {
+    "HOME": [
+      "File",
+      "Edit"
+    ],
+    "PLOT": [
+      "Playback",
+      "xy-Limits",
+      "Controls",
+      "Persistance",
+      "Occupancy",
+      "Waterfall"
+    ],
+    "EMISSION": [
+      "Add/List",
+      "Detection type",
+      "FindPeaks parameters",
+      "Miscellaneous"
+    ]
+  },
+  "Components": [
+    {
+      "Type": "Button",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "toolHome_Open",
+      "PositionID": 1111,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Text": "Open",
+        "Icon": "Icon.OPEN_24",
+        "ButtonPushedFcn": "toolHome_OpenButtonPushed"
+      }
+    },
+    {
+      "Type": "Button",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "toolPlot_Play",
+      "PositionID": 2111,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Text": " Play ",
+        "Icon": "play_24.png",
+        "ButtonPushedFcn": "toolPlot_PlayButtonPushed"
+      }
+    },
+    {
+      "Type": "Spinner",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "toolPlot_xLim1",
+      "PositionID": 2211,
+      "ColumnWidth": "90",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Limits": [
+          0,
+          6000
+        ],
+        "Value": 0,
+        "NumberFormat": "double",
+        "DecimalFormat": "3f",
+        "ValueChangedFcn": "toolPlot_xyLimitsCallbacks"
+      }
+    },
+    {
+      "Type": "Spinner",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "toolPlot_yLim1",
+      "PositionID": 2212,
+      "ColumnWidth": "90",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Limits": [
+          -120,
+          0
+        ],
+        "Value": -120,
+        "NumberFormat": "double",
+        "DecimalFormat": "0f",
+        "ValueChangedFcn": "toolPlot_xyLimitsCallbacks"
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "toolPlot_xLimLabel",
+      "PositionID": 2221,
+      "ColumnWidth": "20",
+      "ColumnHorAlign": "center",
+      "Parameters": {
+        "Text": "x "
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "toolPlot_yLimLabel",
+      "PositionID": 2222,
+      "ColumnWidth": "20",
+      "ColumnHorAlign": "center",
+      "Parameters": {
+        "Text": "y "
+      }
+    },
+    {
+      "Type": "Spinner",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "toolPlot_xLim2",
+      "PositionID": 2231,
+      "ColumnWidth": "90",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Limits": [
+          0,
+          6000
+        ],
+        "Value": 6000,
+        "NumberFormat": "double",
+        "DecimalFormat": "3f",
+        "ValueChangedFcn": "toolPlot_xyLimitsCallbacks"
+      }
+    },
+    {
+      "Type": "Spinner",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "toolPlot_yLim2",
+      "PositionID": 2232,
+      "ColumnWidth": "90",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Limits": [
+          -120,
+          0
+        ],
+        "Value": 0,
+        "NumberFormat": "double",
+        "DecimalFormat": "0f",
+        "ValueChangedFcn": "toolPlot_xyLimitsCallbacks"
+      }
+    },
+    {
+      "Type": "ToggleButton",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "toolPlot_MinHold",
+      "PositionID": 2311,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Text": "Min Hold",
+        "Icon": "MinHold_16.png",
+        "ValueChangedFcn": "toolPlot_controlsCallbacks"
+      }
+    },
+    {
+      "Type": "ToggleButton",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "toolPlot_Persistance",
+      "PositionID": 2312,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Text": "Persistance",
+        "Icon": "Persistance_16.png",
+        "ValueChangedFcn": "toolPlot_controlsCallbacks"
+      }
+    },
+    {
+      "Type": "ToggleButton",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "toolPlot_Average",
+      "PositionID": 2321,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Text": "Average",
+        "Icon": "Average_16.png",
+        "ValueChangedFcn": "toolPlot_controlsCallbacks"
+      }
+    },
+    {
+      "Type": "ToggleButton",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "toolPlot_OCC",
+      "PositionID": 2322,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Text": "Occupancy",
+        "Icon": "OCC_16.png",
+        "ValueChangedFcn": "toolPlot_controlsCallbacks"
+      }
+    },
+    {
+      "Type": "ToggleButton",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "toolPlot_MaxHold",
+      "PositionID": 2331,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Text": "Max Hold",
+        "Icon": "MaxHold_16.png",
+        "ValueChangedFcn": "toolPlot_controlsCallbacks"
+      }
+    },
+    {
+      "Type": "ToggleButton",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "toolPlot_Waterfall",
+      "PositionID": 2332,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Text": "Waterfall",
+        "Icon": "Waterfall_16.png",
+        "ValueChangedFcn": "toolPlot_controlsCallbacks"
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "toolPlot_winSizeLabel",
+      "PositionID": 2411,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "left",
+      "Parameters": {
+        "Text": "Window size: "
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "toolPlot_ColormapLabel",
+      "PositionID": 2412,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "left",
+      "Parameters": {
+        "Text": "Colormap: "
+      }
+    },
+    {
+      "Type": "DropDown",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "toolPlot_persistanceWinSize",
+      "PositionID": 2421,
+      "ColumnWidth": "90",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Items": [
+          "128",
+          "256",
+          "512",
+          "full"
+        ],
+        "Value": "full",
+        "ValueChangedFcn": "toolPlot_persistanceCallbacks"
+      }
+    },
+    {
+      "Type": "DropDown",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "toolPlot_persistanceColormap",
+      "PositionID": 2422,
+      "ColumnWidth": "90",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Items": [
+          "winter",
+          "parula",
+          "turbo"
+        ],
+        "Value": "winter",
+        "ValueChangedFcn": "toolPlot_persistanceCallbacks"
+      }
+    },
+    {
+      "Type": "Spinner",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "toolPlot_persistanceLim1",
+      "PositionID": 2431,
+      "ColumnWidth": "90",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Limits": [
+          0,
+          100
+        ],
+        "Value": 0,
+        "NumberFormat": "double",
+        "DecimalFormat": "3f",
+        "ValueChangedFcn": "toolPlot_persistanceCallbacks"
+      }
+    },
+    {
+      "Type": "ToggleButton",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "toolplot_persistanceRefresh",
+      "PositionID": 2432,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Text": "c-Limits",
+        "Icon": "refresh_16.png",
+        "ValueChangedFcn": "toolPlot_persistanceCallbacks"
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 2441,
+      "ColumnWidth": "10",
+      "ColumnHorAlign": "left",
+      "Parameters": {
+        "Text": "c "
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 2442,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Text": ""
+      }
+    },
+    {
+      "Type": "Spinner",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "toolPlot_persistanceLim2",
+      "PositionID": 2451,
+      "ColumnWidth": "90",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Limits": [
+          0,
+          100
+        ],
+        "Value": 100,
+        "NumberFormat": "double",
+        "DecimalFormat": "3f",
+        "ValueChangedFcn": "toolPlot_persistanceCallbacks"
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 2452,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Text": ""
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "toolPlot_occTypeLabel",
+      "PositionID": 2511,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "left",
+      "Parameters": {
+        "Text": "Threshold type: "
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "toolPlot_occValueLabel",
+      "PositionID": 2512,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "left",
+      "Parameters": {
+        "Text": "Value: "
+      }
+    },
+    {
+      "Type": "DropDown",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "toolPlot_occType",
+      "PositionID": 2521,
+      "ColumnWidth": "90",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Items": [
+          "linear",
+          "offset"
+        ],
+        "Value": "linear",
+        "ValueChangedFcn": "toolPlot_occCallbacks"
+      }
+    },
+    {
+      "Type": "Spinner",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "toolPlot_occValue",
+      "PositionID": 2522,
+      "ColumnWidth": "90",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Limits": [
+          -120,
+          0
+        ],
+        "Value": -80,
+        "NumberFormat": "double",
+        "DecimalFormat": "0f",
+        "ValueChangedFcn": "toolPlot_occCallbacks"
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "toolPlot_waterfallDirectionLabel",
+      "PositionID": 2611,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "left",
+      "Parameters": {
+        "Text": "Direction: "
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "toolPlot_waterfallColormapLabel",
+      "PositionID": 2612,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "left",
+      "Parameters": {
+        "Text": "Colormap: "
+      }
+    },
+    {
+      "Type": "DropDown",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "toolPlot_waterfallDirection",
+      "PositionID": 2621,
+      "ColumnWidth": "90",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Items": [
+          "both",
+          "column",
+          "row"
+        ],
+        "Value": "both",
+        "ValueChangedFcn": "toolPlot_waterfallCallbacks"
+      }
+    },
+    {
+      "Type": "DropDown",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "toolPlot_waterfallColormap",
+      "PositionID": 2622,
+      "ColumnWidth": "90",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Items": [
+          "winter",
+          "parula",
+          "turbo"
+        ],
+        "Value": "winter",
+        "ValueChangedFcn": "toolPlot_waterfallCallbacks"
+      }
+    },
+    {
+      "Type": "Spinner",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "toolPlot_waterfallLim1",
+      "PositionID": 2631,
+      "ColumnWidth": "90",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Limits": [
+          -120,
+          0
+        ],
+        "Value": -120,
+        "NumberFormat": "double",
+        "DecimalFormat": "0f",
+        "ValueChangedFcn": "toolPlot_waterfallCallbacks"
+      }
+    },
+    {
+      "Type": "ToggleButton",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "toolplot_waterfallRefresh",
+      "PositionID": 2632,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Text": "c-Limits",
+        "Icon": "refresh_16.png",
+        "ValueChangedFcn": "toolPlot_waterfallCallbacks"
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 2641,
+      "ColumnWidth": "10",
+      "ColumnHorAlign": "left",
+      "Parameters": {
+        "Text": "c "
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 2642,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Text": ""
+      }
+    },
+    {
+      "Type": "Spinner",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "toolPlot_waterfallLim2",
+      "PositionID": 2651,
+      "ColumnWidth": "90",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Limits": [
+          -120,
+          0
+        ],
+        "Value": 0,
+        "NumberFormat": "double",
+        "DecimalFormat": "0f",
+        "ValueChangedFcn": "toolPlot_waterfallCallbacks"
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 2652,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Text": ""
+      }
+    },
+    {
+      "Type": "Button",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 3111,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Text": " Add  ",
+        "Icon": "Icon.ADD_24",
+        "ButtonPushedFcn": "toolPlot_emissionAdd"
+      }
+    },
+    {
+      "Type": "Button",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "toolPlot_emissionList",
+      "PositionID": 3121,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Text": " List ",
+        "Icon": "Icon.LAYOUT_24",
+        "ButtonPushedFcn": "toolPlot_emissionList"
+      }
+    },
+    {
+      "Type": "RadioButton",
+      "Group": "emissionGroup1",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 3211,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Text": "Manual ROI",
+        "Value": true,
+        "ValueChangedFcn": "toolPlot_emissionAddType"
+      }
+    },
+    {
+      "Type": "RadioButton",
+      "Group": "emissionGroup1",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 3212,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Text": "Automatic findpeaks",
+        "Value": false
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 3311,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Text": "Number of peaks: "
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 3312,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Text": "Prominence: "
+      }
+    },
+    {
+      "Type": "Spinner",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "toolPlot_emissionNPeaks",
+      "PositionID": 3321,
+      "ColumnWidth": "90",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Limits": [
+          1,
+          100
+        ],
+        "Value": 10,
+        "Enabled": false
+      }
+    },
+    {
+      "Type": "Spinner",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "toolPlot_emissionProminence",
+      "PositionID": 3322,
+      "ColumnWidth": "90",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Limits": [
+          3,
+          50
+        ],
+        "Value": 30,
+        "Enabled": false
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 3331,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Text": "Separation: "
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 3332,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Text": "Width: "
+      }
+    },
+    {
+      "Type": "Spinner",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "toolPlot_emissionSeparation",
+      "PositionID": 3341,
+      "ColumnWidth": "90",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Limits": [
+          5,
+          6000
+        ],
+        "Value": 25,
+        "Enabled": false
+      }
+    },
+    {
+      "Type": "Spinner",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "toolPlot_emissionWidth",
+      "PositionID": 3342,
+      "ColumnWidth": "90",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Limits": [
+          0,
+          100000
+        ],
+        "Value": 10,
+        "Enabled": false
+      }
+    },
+    {
+      "Type": "Button",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "toolplot_emissionClassification",
+      "PositionID": 3411,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Text": "Classification",
+        "Icon": "list_16.png",
+        "ButtonPushedFcn": "toolplot_emissionClassification"
+      }
+    },
+    {
+      "Type": "Button",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "toolplot_emissionDriveTest",
+      "PositionID": 3412,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Text": "Drive-test",
+        "Icon": "DriveTest_16.png",
+        "ButtonPushedFcn": "toolplot_emissionDriveTest"
+      }
+    }
+  ]
+}
