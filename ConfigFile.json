@@ -1,8 +1,7 @@
 {
   "Tab": {
     "HOME": [
-      "File",
-      "Edit"
+      "File"
     ],
     "PLOT": [
       "Playback",
@@ -12,10 +11,11 @@
       "Occupancy",
       "Waterfall"
     ],
-    "EMISSION": [
-      "Add/List",
-      "Detection type",
-      "FindPeaks parameters",
+    "REPORT": [
+      "Report",
+      "Detection",
+      "Findpeaks parameters",
+      "Classification",
       "Miscellaneous"
     ]
   },
@@ -26,12 +26,26 @@
       "appProperty": 0,
       "appPropertyName": "toolHome_Open",
       "PositionID": 1111,
-      "ColumnWidth": "auto",
+      "ColumnWidth": "40",
       "ColumnHorAlign": "auto",
       "Parameters": {
-        "Text": "Open",
+        "Text": "Open\nFile",
         "Icon": "Icon.OPEN_24",
-        "ButtonPushedFcn": "toolHome_OpenButtonPushed"
+        "ButtonPushedFcn": "toolHome_OpenFile"
+      }
+    },
+    {
+      "Type": "Button",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "toolHome_SpectralData",
+      "PositionID": 1121,
+      "ColumnWidth": "40",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Text": "Spectral\nData",
+        "Icon": "playback_24.png",
+        "ButtonPushedFcn": "toolHome_SpectralData"
       }
     },
     {
@@ -40,12 +54,43 @@
       "appProperty": 1,
       "appPropertyName": "toolPlot_Play",
       "PositionID": 2111,
-      "ColumnWidth": "auto",
+      "ColumnWidth": "40",
       "ColumnHorAlign": "auto",
       "Parameters": {
-        "Text": " Play ",
-        "Icon": "play_24.png",
-        "ButtonPushedFcn": "toolPlot_PlayButtonPushed"
+        "Text": "Play",
+        "Icon": "Icon.RUN_24",
+        "ButtonPushedFcn": "toolPlot_Play"
+      }
+    },
+    {
+      "Type": "DropDownButton",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "toolPlot_Save",
+      "PositionID": 2121,
+      "ColumnWidth": "40",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Children": [
+          {
+            "Type": "ListItem",
+            "Parameters": {
+              "Text": "Export image",
+              "Icon": "Icon.EXPORT_16",
+              "ItemPushedFcn": "toolPlot_Save"
+            }
+          },
+          {
+            "Type": "ListItem",
+            "Parameters": {
+              "Text": "Save parameters",
+              "Icon": "report_16.png",
+              "ItemPushedFcn": "toolPlot_Save"
+            }
+          }
+        ],
+        "Text": " Save ",
+        "Icon": "Icon.SAVE_24"
       }
     },
     {
@@ -64,7 +109,7 @@
         "Value": 0,
         "NumberFormat": "double",
         "DecimalFormat": "3f",
-        "ValueChangedFcn": "toolPlot_xyLimitsCallbacks"
+        "ValueChangedFcn": "toolPlot_xyLimits"
       }
     },
     {
@@ -83,7 +128,7 @@
         "Value": -120,
         "NumberFormat": "double",
         "DecimalFormat": "0f",
-        "ValueChangedFcn": "toolPlot_xyLimitsCallbacks"
+        "ValueChangedFcn": "toolPlot_xyLimits"
       }
     },
     {
@@ -126,7 +171,7 @@
         "Value": 6000,
         "NumberFormat": "double",
         "DecimalFormat": "3f",
-        "ValueChangedFcn": "toolPlot_xyLimitsCallbacks"
+        "ValueChangedFcn": "toolPlot_xyLimits"
       }
     },
     {
@@ -145,7 +190,7 @@
         "Value": 0,
         "NumberFormat": "double",
         "DecimalFormat": "0f",
-        "ValueChangedFcn": "toolPlot_xyLimitsCallbacks"
+        "ValueChangedFcn": "toolPlot_xyLimits"
       }
     },
     {
@@ -159,7 +204,7 @@
       "Parameters": {
         "Text": "Min Hold",
         "Icon": "MinHold_16.png",
-        "ValueChangedFcn": "toolPlot_controlsCallbacks"
+        "ValueChangedFcn": "toolPlot_Controls"
       }
     },
     {
@@ -173,7 +218,7 @@
       "Parameters": {
         "Text": "Persistance",
         "Icon": "Persistance_16.png",
-        "ValueChangedFcn": "toolPlot_controlsCallbacks"
+        "ValueChangedFcn": "toolPlot_Controls"
       }
     },
     {
@@ -187,7 +232,7 @@
       "Parameters": {
         "Text": "Average",
         "Icon": "Average_16.png",
-        "ValueChangedFcn": "toolPlot_controlsCallbacks"
+        "ValueChangedFcn": "toolPlot_Controls"
       }
     },
     {
@@ -201,7 +246,7 @@
       "Parameters": {
         "Text": "Occupancy",
         "Icon": "OCC_16.png",
-        "ValueChangedFcn": "toolPlot_controlsCallbacks"
+        "ValueChangedFcn": "toolPlot_Controls"
       }
     },
     {
@@ -215,7 +260,7 @@
       "Parameters": {
         "Text": "Max Hold",
         "Icon": "MaxHold_16.png",
-        "ValueChangedFcn": "toolPlot_controlsCallbacks"
+        "ValueChangedFcn": "toolPlot_Controls"
       }
     },
     {
@@ -229,7 +274,7 @@
       "Parameters": {
         "Text": "Waterfall",
         "Icon": "Waterfall_16.png",
-        "ValueChangedFcn": "toolPlot_controlsCallbacks"
+        "ValueChangedFcn": "toolPlot_Controls"
       }
     },
     {
@@ -272,7 +317,7 @@
           "full"
         ],
         "Value": "full",
-        "ValueChangedFcn": "toolPlot_persistanceCallbacks"
+        "ValueChangedFcn": "toolPlot_Persistance"
       }
     },
     {
@@ -290,7 +335,7 @@
           "turbo"
         ],
         "Value": "winter",
-        "ValueChangedFcn": "toolPlot_persistanceCallbacks"
+        "ValueChangedFcn": "toolPlot_Persistance"
       }
     },
     {
@@ -309,7 +354,7 @@
         "Value": 0,
         "NumberFormat": "double",
         "DecimalFormat": "3f",
-        "ValueChangedFcn": "toolPlot_persistanceCallbacks"
+        "ValueChangedFcn": "toolPlot_Persistance"
       }
     },
     {
@@ -323,7 +368,7 @@
       "Parameters": {
         "Text": "c-Limits",
         "Icon": "refresh_16.png",
-        "ValueChangedFcn": "toolPlot_persistanceCallbacks"
+        "ValueChangedFcn": "toolPlot_Persistance"
       }
     },
     {
@@ -366,7 +411,7 @@
         "Value": 100,
         "NumberFormat": "double",
         "DecimalFormat": "3f",
-        "ValueChangedFcn": "toolPlot_persistanceCallbacks"
+        "ValueChangedFcn": "toolPlot_Persistance"
       }
     },
     {
@@ -419,7 +464,7 @@
           "offset"
         ],
         "Value": "linear",
-        "ValueChangedFcn": "toolPlot_occCallbacks"
+        "ValueChangedFcn": "toolPlot_Occupancy"
       }
     },
     {
@@ -438,7 +483,7 @@
         "Value": -80,
         "NumberFormat": "double",
         "DecimalFormat": "0f",
-        "ValueChangedFcn": "toolPlot_occCallbacks"
+        "ValueChangedFcn": "toolPlot_Occupancy"
       }
     },
     {
@@ -480,7 +525,7 @@
           "row"
         ],
         "Value": "both",
-        "ValueChangedFcn": "toolPlot_waterfallCallbacks"
+        "ValueChangedFcn": "toolPlot_Waterfall"
       }
     },
     {
@@ -498,7 +543,7 @@
           "turbo"
         ],
         "Value": "winter",
-        "ValueChangedFcn": "toolPlot_waterfallCallbacks"
+        "ValueChangedFcn": "toolPlot_Waterfall"
       }
     },
     {
@@ -517,7 +562,7 @@
         "Value": -120,
         "NumberFormat": "double",
         "DecimalFormat": "0f",
-        "ValueChangedFcn": "toolPlot_waterfallCallbacks"
+        "ValueChangedFcn": "toolPlot_Waterfall"
       }
     },
     {
@@ -531,7 +576,7 @@
       "Parameters": {
         "Text": "c-Limits",
         "Icon": "refresh_16.png",
-        "ValueChangedFcn": "toolPlot_waterfallCallbacks"
+        "ValueChangedFcn": "toolPlot_Waterfall"
       }
     },
     {
@@ -574,7 +619,7 @@
         "Value": 0,
         "NumberFormat": "double",
         "DecimalFormat": "0f",
-        "ValueChangedFcn": "toolPlot_waterfallCallbacks"
+        "ValueChangedFcn": "toolPlot_Waterfall"
       }
     },
     {
@@ -598,37 +643,23 @@
       "ColumnWidth": "auto",
       "ColumnHorAlign": "auto",
       "Parameters": {
-        "Text": " Add  ",
-        "Icon": "Icon.ADD_24",
-        "ButtonPushedFcn": "toolPlot_emissionAdd"
+        "Text": " Run  ",
+        "Icon": "Icon.RUN_24",
+        "ButtonPushedFcn": "toolReport_Run"
       }
     },
     {
       "Type": "Button",
       "Group": "",
-      "appProperty": 1,
-      "appPropertyName": "toolPlot_emissionList",
-      "PositionID": 3121,
-      "ColumnWidth": "auto",
-      "ColumnHorAlign": "auto",
-      "Parameters": {
-        "Text": " List ",
-        "Icon": "Icon.LAYOUT_24",
-        "ButtonPushedFcn": "toolPlot_emissionList"
-      }
-    },
-    {
-      "Type": "RadioButton",
-      "Group": "emissionGroup1",
       "appProperty": 0,
       "appPropertyName": "",
       "PositionID": 3211,
       "ColumnWidth": "auto",
       "ColumnHorAlign": "auto",
       "Parameters": {
-        "Text": "Manual ROI",
-        "Value": true,
-        "ValueChangedFcn": "toolPlot_emissionAddType"
+        "Text": "Add\nEmission",
+        "Icon": "Icon.NEW_24",
+        "ButtonPushedFcn": "toolReport_AddEmission"
       }
     },
     {
@@ -636,12 +667,26 @@
       "Group": "emissionGroup1",
       "appProperty": 0,
       "appPropertyName": "",
-      "PositionID": 3212,
+      "PositionID": 3221,
       "ColumnWidth": "auto",
       "ColumnHorAlign": "auto",
       "Parameters": {
         "Text": "Automatic findpeaks",
-        "Value": false
+        "Value": true
+      }
+    },
+    {
+      "Type": "RadioButton",
+      "Group": "emissionGroup1",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 3222,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Text": "Manual ROI",
+        "Value": false,
+        "ValueChangedFcn": "toolReport_DetectionType"
       }
     },
     {
@@ -665,7 +710,7 @@
       "ColumnWidth": "auto",
       "ColumnHorAlign": "auto",
       "Parameters": {
-        "Text": "Prominence: "
+        "Text": "Prominence (dB): "
       }
     },
     {
@@ -681,8 +726,7 @@
           1,
           100
         ],
-        "Value": 10,
-        "Enabled": false
+        "Value": 10
       }
     },
     {
@@ -698,8 +742,7 @@
           3,
           50
         ],
-        "Value": 30,
-        "Enabled": false
+        "Value": 30
       }
     },
     {
@@ -711,7 +754,7 @@
       "ColumnWidth": "auto",
       "ColumnHorAlign": "auto",
       "Parameters": {
-        "Text": "Separation: "
+        "Text": "Separation (kHz): "
       }
     },
     {
@@ -723,7 +766,7 @@
       "ColumnWidth": "auto",
       "ColumnHorAlign": "auto",
       "Parameters": {
-        "Text": "Width: "
+        "Text": "Width (kHz): "
       }
     },
     {
@@ -739,8 +782,7 @@
           5,
           6000
         ],
-        "Value": 25,
-        "Enabled": false
+        "Value": 25
       }
     },
     {
@@ -756,8 +798,7 @@
           0,
           100000
         ],
-        "Value": 10,
-        "Enabled": false
+        "Value": 10
       }
     },
     {
@@ -771,7 +812,21 @@
       "Parameters": {
         "Text": "Classification",
         "Icon": "list_16.png",
-        "ButtonPushedFcn": "toolplot_emissionClassification"
+        "ButtonPushedFcn": "toolReport_Classification"
+      }
+    },
+    {
+      "Type": "Button",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "toolplot_emissionDatabase",
+      "PositionID": 3412,
+      "ColumnWidth": "auto",
+      "ColumnHorAlign": "auto",
+      "Parameters": {
+        "Text": "Database",
+        "Icon": "database_16.png",
+        "ButtonPushedFcn": "toolReport_Database"
       }
     },
     {
@@ -779,13 +834,13 @@
       "Group": "",
       "appProperty": 0,
       "appPropertyName": "toolplot_emissionDriveTest",
-      "PositionID": 3412,
+      "PositionID": 3511,
       "ColumnWidth": "auto",
       "ColumnHorAlign": "auto",
       "Parameters": {
         "Text": "Drive-test",
-        "Icon": "DriveTest_16.png",
-        "ButtonPushedFcn": "toolplot_emissionDriveTest"
+        "Icon": "DriveTest_24.png",
+        "ButtonPushedFcn": "toolReport_DriveTest"
       }
     }
   ]

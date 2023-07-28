@@ -1,4 +1,4 @@
-function openButtonPushed(src, event, app)
+function toolHome_OpenFile(src, event, app)
 
     [fileName, filePath, fileFormat] = uigetfile({'*.bin',    'appColeta/Logger (*.bin)';      ...
                                                   '*.dbm',    'CellPlan (*.dbm)';              ...
@@ -6,6 +6,7 @@ function openButtonPushed(src, event, app)
                                                   '*.csv',    'Argus (*.csv)';                 ...
                                                   '*.mat',    'appAnalise/appColeta (*.mat)'}, ...
                                                   'MultiSelect', 'on');
+    app.Container.bringToFront()
     
     if ~fileFormat
         return

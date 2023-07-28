@@ -1,4 +1,4 @@
-function app = file(hFig)
+function app = leftPanel_File(hFig)
 
     app = struct();
 

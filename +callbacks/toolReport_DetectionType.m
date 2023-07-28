@@ -1,4 +1,4 @@
-function toolPlot_emissionAddType(src, event, app)
+function toolReport_DetectionType(src, event, app)
 
     if src.Selected % "Manual ROI"
         app.toolPlot_emissionNPeaks.Enabled     = false;

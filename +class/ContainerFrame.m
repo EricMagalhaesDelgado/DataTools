@@ -236,27 +236,21 @@ classdef ContainerFrame < handle & dynamicprops
                                 case 'RadioButton'
                                     idx = find(strcmp(GroupTable.name, tempTable_COLUMN.Group{ll}), 1);
                                     Component = RadioButton(GroupTable.handle{idx});
-                            end
-                            
-                            for mm = 1:numel(Parameters)
-                                ParameterValue = tempTable_COLUMN.Parameters{ll}.(Parameters{mm});
-            
-                                switch Parameters{mm}
-                                    case {'ButtonPushedFcn', 'ValueChangedFcn'}
-                                        ParameterValue = {str2func(sprintf('callbacks.%s', ParameterValue)), this};
 
-                                    case 'Icon'
-                                        if strcmp(ParameterValue(1:5), 'Icon.')
-                                            ParameterValue = eval(ParameterValue);
-                                        end
+                                case 'DropDownButton'
+                                    popup = PopupList();
+                                    for mm = 1:numel(tempTable_COLUMN.Parameters{ll}.Children)
+                                        childComponent  = eval(tempTable_COLUMN.Parameters{ll}.Children(mm).Type);
+                                        childParameters = fields(tempTable_COLUMN.Parameters{ll}.Children(mm).Parameters);
+                                        ComponentProperties(this, tempTable_COLUMN(ll,:), childParameters, childComponent, 'childComponent', mm)
 
-                                    case {'Items', 'maxRows', 'maxColumns'}
-                                        % Properties that must be passing into the constructor
-                                        continue
-                                end
-            
-                                Component.(Parameters{mm}) = ParameterValue;
+                                        popup.add(childComponent)
+                                    end
+                                    
+                                    Component = matlab.ui.internal.toolstrip.DropDownButton(' Save ', matlab.ui.internal.toolstrip.Icon.SAVE_24);
+                                    Component.Popup = popup;
                             end
+                            ComponentProperties(this, tempTable_COLUMN(ll,:), Parameters, Component, 'Component', -1)
                             Column.add(Component)
 
                             if tempTable_COLUMN.appProperty(ll)
@@ -276,7 +270,7 @@ classdef ContainerFrame < handle & dynamicprops
         function startupBuilding_QuickAccessBar(this)
             % C:\Program Files\MATLAB\R2022b\toolbox\matlab\toolstrip\+matlab\+ui\+internal\+toolstrip\+qab
             helpButton = matlab.ui.internal.toolstrip.qab.QABHelpButton();
-            helpButton.ButtonPushedFcn = {@callbacks.helpButtonPushed, this};
+            helpButton.ButtonPushedFcn = {@callbacks.toolQAB_Help, this};
 
             this.Container.add(helpButton) 
         end
@@ -306,37 +300,50 @@ classdef ContainerFrame < handle & dynamicprops
 
         %-----------------------------------------------------------------%
         function startupBuilding_PanelGroup(this)
-            leftPanelOptions      = struct('Tag', 'LeftPanel1',  'Title', 'Spectral data', 'PermissibleRegions', 'left',  'Region', 'left');
-            leftPanel             = matlab.ui.internal.FigurePanel(leftPanelOptions);
-            
-            leftPanel.Maximizable = true;
-            leftPanel.Closable    = true;
-%             leftPanel.Contextual  = true;
+            % A priori criarei apenas três painéis à esquerda do documento.
+            % É importante frisar, contudo, que ainda existe a possibilidade 
+            % de criar painéis à direita e abaixo do documento.
 
-            leftPanelOptions2      = struct('Tag', 'LeftPanel2',  'Title', 'Spectral data', 'PermissibleRegions', 'left',  'Region', 'left');
-            leftPanel2             = matlab.ui.internal.FigurePanel(leftPanelOptions2);
-            
-            leftPanel2.Maximizable = true;
-            leftPanel2.Closable    = true;
-%             leftPanel2.Contextual  = true;
+            % PANEL 1: "FILE"
+            leftPanelOptions1      = struct('Tag', 'LeftPanel1',  'Title', 'File', 'PermissibleRegions', 'left',  'Region', 'left');
+            leftPanel1             = matlab.ui.internal.FigurePanel(leftPanelOptions1);
 
-            obj = createComponents.file(leftPanel.Figure);
+            obj = createComponents.leftPanel_File(leftPanel1.Figure);
             objFields = fields(obj);
             for ii = 1:numel(objFields)
-                this.registerComponents(sprintf('leftPanel%d', ii), obj.(objFields{ii}))
+                this.registerComponents(sprintf('leftPanel1_%s', objFields{ii}), obj.(objFields{ii}))
             end
 
-            % Por enquanto não criarei os painéis abaixo e à direita do
-            % documento.
+            % PANEL 2: "SPECTRAL DATA"
+            leftPanelOptions2      = struct('Tag', 'LeftPanel2',  'Title', 'Spectral data', 'PermissibleRegions', 'left',  'Region', 'left');
+            leftPanel2             = matlab.ui.internal.FigurePanel(leftPanelOptions2);
 
+            obj = createComponents.leftPanel_SpectralData(leftPanel1.Figure);
+            objFields = fields(obj);
+            for ii = 1:numel(objFields)
+                this.registerComponents(sprintf('leftPanel2_%s', objFields{ii}), obj.(objFields{ii}))
+            end
+                        
+            % PANEL 3: "EMISSION"
+            leftPanelOptions3      = struct('Tag', 'LeftPanel3',  'Title', 'Emission', 'PermissibleRegions', 'left',  'Region', 'left');
+            leftPanel3             = matlab.ui.internal.FigurePanel(leftPanelOptions3);
+
+            obj = createComponents.leftPanel_Emission(leftPanel1.Figure);
+            objFields = fields(obj);
+            for ii = 1:numel(objFields)
+                this.registerComponents(sprintf('leftPanel3_%s', objFields{ii}), obj.(objFields{ii}))
+            end
+
+            % Final operations...
             bottomPanel = [];
             rightPanel  = [];
 
-            panelGroup  = {leftPanel, leftPanel2, bottomPanel, rightPanel};
+            panelGroup  = {leftPanel1, leftPanel2, leftPanel3, bottomPanel, rightPanel};
             panelGroup  = panelGroup(cellfun(@(x) ~isempty(x), panelGroup));
 
             for ii = 1:numel(panelGroup)
                 this.Container.addPanel(panelGroup{ii})
+                panelGroup{ii}.Collapsed = true;
             end
         end
 
@@ -345,7 +352,7 @@ classdef ContainerFrame < handle & dynamicprops
         function startupBuilding_StatusBar(this)
             % C:\Program Files\MATLAB\R2022b\toolbox\matlab\appcontainer\+matlab\+ui\+internal\+statusbar\StatusBar.m
             
-            statusLabel = matlab.ui.internal.statusbar.StatusLabel(struct('Icon', 'anatelDB_16.png', 'Text', 'Iniciando...', 'Region', 'left'));
+            statusLabel = matlab.ui.internal.statusbar.StatusLabel(struct('Icon', 'info_16.png', 'Text', 'Select files to read...', 'Region', 'left'));
             statusBar   = matlab.ui.internal.statusbar.StatusBar();
             statusBar.add(statusLabel)
 
@@ -375,6 +382,7 @@ classdef ContainerFrame < handle & dynamicprops
         % ## REGISTER COMPONENTS ##
         %-----------------------------------------------------------------%
         function registerComponents(this, propName, propObj)
+
             if ~ismember(propName, this.hDynamicProperties.id)
                 propHandle = addprop(this, propName);
                 this.hDynamicProperties{end+1,:} = {propName, propHandle};
@@ -384,9 +392,43 @@ classdef ContainerFrame < handle & dynamicprops
 
 
         %-----------------------------------------------------------------%
+        % ## PARSING TOOLSTRIP CONFIG FILE (JSON) ##
+        %-----------------------------------------------------------------%
+        function ComponentProperties(this, tempTable_COLUMN, Parameters, Component, Tag, idx)
+            
+            import matlab.ui.internal.toolstrip.*
+
+            for ii = 1:numel(Parameters)
+                switch Tag
+                    case 'Component'
+                        parameterValue = tempTable_COLUMN.Parameters{1}.(Parameters{ii});
+                    case 'childComponent'
+                        parameterValue = tempTable_COLUMN.Parameters{1}.Children(idx).Parameters.(Parameters{ii});
+                end
+
+                switch Parameters{ii}
+                    case {'ButtonPushedFcn', 'ValueChangedFcn', 'ItemPushedFcn'}
+                        parameterValue = {str2func(sprintf('callbacks.%s', parameterValue)), this};
+
+                    case 'Icon'
+                        if strcmp(parameterValue(1:5), 'Icon.')
+                            parameterValue = eval(parameterValue);
+                        end
+
+                    case {'Items', 'maxRows', 'maxColumns', 'Children'}
+                        % Properties that must be passing into the constructor
+                        continue
+                end
+
+                Component.(Parameters{ii}) = parameterValue;
+            end
+        end
+
+        %-----------------------------------------------------------------%
         % ## CUSTOM COMPONENTS ##
         %-----------------------------------------------------------------%
         function customComponents_PanelTitle(this)
+
             jsCommand = sprintf(['var elements = document.querySelectorAll(''span[class="title"]'');\n' ...
                                  'for (let ii = 0; ii < elements.length; ii++) {\n' ...
                                  '\telements[ii].style.fontSize = "11px";\n' ...
