@@ -1,83 +1,20 @@
 classdef ContainerFrame < handle & dynamicprops
 
-    % !! ASPECTOS GERAIS !!
-    
-    % (a) Como dentro de cada painel e cada documento há uma uifigure,
-    % preciso manter handle para cada uma delas. Inicialmente, vou deixar
-    % esses handles nas propriedades "hFigDocuments" e "hPanels".
-    % - "hFigDocuments" é um cell array dos objetos "FigureDocument", os quais registram os handles para as "uifigures" relacionadas a cada um.
-    %    hFigDocuments = struct(struct(app).DocumentMap).serialization.values;
-    % - "hPanels" é um cell array dos objetos "FigurePanel", os quais registram os handles para as "uifigures" relacionadas a cada um dos três painéis - "Left", "Bottom" e "Right".
-    %    hPanels = struct(struct(app).PanelMap).serialization.values;
-    
-    % (b) Para trabalhar de forma semelhante ao AppDesigner, devo criar uma
-    % forma de "REGISTRO" dos componentes que podem ser referenciados no
-    % app. Por conta disso, inserida "dynamicprops" como super classe, o
-    % que possibilita a inclusão programática de propriedades na instância 
-    % do app. 
-    %     - newProp = addprop(obj, 'propName', propValue)
-    %     - delete(newProp)
-
-    % (c) De forma geral, os ícones devem ser imagens PNG ou JPEG, com
-    % 16x16 pixels. Exceção aos ícones grandes do Toolstrip, os quais
-    % são 24x24 pixels.
-    % O ícone do Matlab, no topo da janela, é o ícone do navegador. Até
-    % existe a propriedade "Icon" no objeto "WebWindow", mas nada acontece... 
-    % testar no R2023a.
-    %    - hWindow = struct(app.Container).Window
-    %
-    % Ícones do MATLAB:
-    % C:\Program Files\MATLAB\R2022b\toolbox\shared\controllib\general\resources\toolstrip_icons
-
-    % (d) O registro dos componentes, incluindo-os como propriedades do
-    % app, demanda a inclusão de um prefixo. Inicialmente, inseri o nome do
-    % módulo: "file", "playback", "driveTest" e "anatelDB", por exemplo.
-    % Refletir como implementar a abertura de mais de um módulo "driveTest", 
-    % por exemplo. Como referenciar os seus componentes?
-
-    % Preciso ter uma propriedade que registre os módulos que estão
-    % abertos.... {'Playback', 'DriveTest', 'Report'} por exemplo.
-
-    % Um objeto do tipo 'matlab.ui.internal.FigureDocument' tem a propriedade 
-    % "Figure" que armazena o handle pra uifigure. A ordem da figura (apresentada no
-    % docked container) fica registrada na propriedade "Index".
-    %
-    % As propriedades "Title" e "Visible" do objeto são "sincronizadas" com as propriedades
-    % "Name" e "Visible" dauifigure.
-    %
-    % Armazena na ordem de criação das figuras, a posição é armazenada na propriedade Index do pai da Figure, o FigureDocument.
-    % Ao fechar, ele apaga da lista...
-
-    % figDoc1 = struct(struct(app).DocumentMap).serialization.values{1}; % Index = 1;
-    % uiFig1  = figDoc1.Figure;
-
-    % Exemplos para desenvolvimento dos módulos:
-    % - TOOLSTRIP: C:\Program Files\MATLAB\R2022b\toolbox\stats\mlearnapps\+mlearnapp\+internal\+ui\DialogFactory.m
-    % - QUICKACCESSBAR: ...
-
     properties
+        %-----------------------------------------------------------------%
         pathToMFILE
         
         Container
-        
         hWebWindow
-        hFigDocuments
-        hPanels
-        hStatusBar
-        
         hDynamicProperties = table('Size', [0, 2], 'VariableTypes', {'cell', 'cell'}, 'VariableNames', {'id', 'handle'})
-
-        % Toolstrip componentes handles
-        % tool_OpenButton = struct(struct(struct(struct(struct(app.Container).TabGroupOrder).Children(1)).Children).Children).Children
-
         
-        metaData = struct('File', {}, 'Type', {}, 'Data', {}, 'Samples', {}, 'Memory', {});
-        Samples  = [];
+        metaData = class.metaData.empty;
         specData = [];
         
-        uuid
+        uuid     = char(matlab.lang.internal.uuid())
     end
     
+
     methods
         %-----------------------------------------------------------------%
         function this = ContainerFrame(varargin)
@@ -97,83 +34,72 @@ classdef ContainerFrame < handle & dynamicprops
             addlistener(this.Container, 'StateChanged', @this.appStateChangedCallback);
 
             % Main containers/components building
-            startupBuilding_Toolstrip(this)
+            startupBuilding_TabGroup(this, class.Constants.appName)
+            TabCreation(this, 'FILE')
+
+            PanelCreation(this, 'File',         'left')
+            PanelCreation(this, 'SpectralData', 'left')
+            PanelCreation(this, 'Emission',     'left')
+
+            startupBuilding_DocumentGroup(this)
             startupBuilding_QuickAccessBar(this)
-%             startupBuilding_FigureDocumentGroup(this)
-%             startupBuilding_PanelGroup(this)
             startupBuilding_StatusBar(this)
 
-            % Others properties
-            this.hFigDocuments = struct(struct(this.Container).DocumentMap).serialization.values;
-            this.hPanels       = struct(struct(this.Container).PanelMap).serialization.values;
-            this.hStatusBar    = struct(struct(this.Container).StatusBar).Children;
-            this.uuid          = char(matlab.lang.internal.uuid());
-
             % Visibility
-            this.Container.Visible = true;
+            this.Container.Visible = true;            
 
             % Register app
             setappdata(groot, class.Constants.appName, this);
+
+            % App startup (varargin - name of the file or folder to read)
         end
 
 
         %-----------------------------------------------------------------%
-        function delete(this)
-            if isappdata(groot, class.Constants.appName)
-                rmappdata(groot, class.Constants.appName);
+        function TabCreation(this, Tag)
+
+            % Verifica se a aba existe...
+            tabGroup = this.Container.getTabGroup(class.Constants.appName);
+            try
+                tabGroup.getChildByTag(Tag);
+                return
+            catch
             end
 
-            delete(this)
-        end
-    end
-
-
-    methods (Access = private)
-        %-----------------------------------------------------------------%
-        % ## STARTUP ##
-        %-----------------------------------------------------------------%
-        function startupBuilding_Toolstrip(this)
-            % C:\Program Files\MATLAB\R2022b\toolbox\matlab\toolstrip\+matlab\+ui\+internal\+toolstrip
-            % Hierarquia:
-            % TABGROUP >> TAB >> SECTION >> COLUMN >> COMPONENTS
-
-            import matlab.ui.internal.toolstrip.*
+            % Parseando o arquivo de configuração e criando os objetos...
+            tempFile = jsondecode(fileread(fullfile(fileparts(this.pathToMFILE), '+toolstrip', sprintf('toolstrip_ConfigFile_%s.json', Tag))));
             
-            % Leitura do arquivo de configuração do toolstrip em JSON:
-            tempFile = jsondecode(fileread('ConfigFile.json'));            
-            
-            % Criação dos objetos TAB e SECTION:
             TabStruct  = tempFile.Tab;
             TabFields  = fields(TabStruct);
             
+            % Objetos "TAB" e "SECTION"
             objStruct  = struct();
-            for ii = 1:numel(TabFields)
-                objStruct(ii).Tab = Tab(TabFields{ii});
-                objStruct(ii).Tab.Tag = TabFields{ii};
+            for ii1 = 1:numel(TabFields)
+                objStruct(ii1).Tab = matlab.ui.internal.toolstrip.Tab(TabFields{ii1});
+                objStruct(ii1).Tab.Tag = TabFields{ii1};
                 
-                SectionNames = TabStruct.(TabFields{ii});
-                for jj = 1:numel(SectionNames)
-                    objStruct(ii).Section(jj) = objStruct(ii).Tab.addSection(SectionNames{jj});
+                SectionNames = TabStruct.(TabFields{ii1});
+                for jj1 = 1:numel(SectionNames)
+                    objStruct(ii1).Section(jj1) = objStruct(ii1).Tab.addSection(SectionNames{jj1});
                 end
             end
-            
-            % Criação dos componentes:
+
             CompTable = struct2table(tempFile.Components);
             CompTable = sortrows(CompTable, 'PositionID');
 
-            % Criação dos objetos GROUP:
+            % Objetos "GROUP"
             Groups = unique(CompTable.Group);
             GroupTable = table('Size', [0,2], 'VariableTypes', {'cell', 'cell'}, 'VariableNames', {'name', 'handle'});
             for ii = 1:numel(Groups)
                 if ~isempty(Groups{ii})
-                    GroupTable(end+1,:) = {Groups{ii}, {ButtonGroup()}};
+                    GroupTable(end+1,:) = {Groups{ii}, {matlab.ui.internal.toolstrip.ButtonGroup()}};
                 end
             end
 
-            tabGroup = TabGroup();
-            tabGroup.Tag = 'myTabGroup';
-            
-            idx1 = fix(CompTable.PositionID/1000);                          % Tab index
+            % Objeto COLUMN e componentes da GUI (atualmente limitado ao BUTTON, 
+            % GRIDPICKERBUTTON, LABEL, SPINNER, DROPDOWN, TOGGLEBUTTON, 
+            % RADIOBUTTON e DROPDOWNBUTTON)
+            idx1 = fix(CompTable.PositionID/1000);                                      % Tab index
             for ii = 1:numel(TabFields)
                 tempTable_TAB = CompTable(idx1==ii,:);
             
@@ -195,8 +121,8 @@ classdef ContainerFrame < handle & dynamicprops
         
                         % ColumnHorizontalAlignment
                         colHorAlign = [];
-                        if any(~strcmp(unique(tempTable_COLUMN.ColumnHorAlign), 'auto'))
-                            colHorAlign = tempTable_COLUMN.ColumnHorAlign(cellfun(@(x) ~strcmp(x, 'auto'), tempTable_COLUMN.ColumnHorAlign));
+                        if any(~strcmp(unique(tempTable_COLUMN.ColumnAlign), 'auto'))
+                            colHorAlign = tempTable_COLUMN.ColumnAlign(cellfun(@(x) ~strcmp(x, 'auto'), tempTable_COLUMN.ColumnAlign));
                             colHorAlign = colHorAlign{1};
                         end
 
@@ -211,43 +137,43 @@ classdef ContainerFrame < handle & dynamicprops
 
                             switch tempTable_COLUMN.Type{ll}
                                 case 'Button'
-                                    Component = Button();
+                                    Component = matlab.ui.internal.toolstrip.Button();
                                 
                                 case 'GridPickerButton'
-                                    Component = GridPickerButton('', tempTable_COLUMN.Parameters{ll}.maxRows, tempTable_COLUMN.Parameters{ll}.maxColumns);
+                                    Component = matlab.ui.internal.toolstrip.GridPickerButton('', tempTable_COLUMN.Parameters{ll}.maxRows, tempTable_COLUMN.Parameters{ll}.maxColumns);
                                 
                                 case 'Label'
-                                    Component = Label();
+                                    Component = matlab.ui.internal.toolstrip.Label();
                                 
                                 case 'Spinner'
-                                    Component = Spinner();
+                                    Component = matlab.ui.internal.toolstrip.Spinner();
                                 
                                 case 'DropDown'
-                                    Component = DropDown(tempTable_COLUMN.Parameters{ll}.Items);
+                                    Component = matlab.ui.internal.toolstrip.DropDown(tempTable_COLUMN.Parameters{ll}.Items);
                                 
                                 case 'ToggleButton'
                                     if isempty(tempTable_COLUMN.Group{ll})
-                                        Component = ToggleButton();
+                                        Component = matlab.ui.internal.toolstrip.ToggleButton();
                                     else
                                         idx = find(strcmp(GroupTable.name, tempTable_COLUMN.Group{ll}), 1);
-                                        Component = ToggleButton('', GroupTable.handle{idx});
+                                        Component = matlab.ui.internal.toolstrip.ToggleButton('', GroupTable.handle{idx});
                                     end
 
                                 case 'RadioButton'
                                     idx = find(strcmp(GroupTable.name, tempTable_COLUMN.Group{ll}), 1);
-                                    Component = RadioButton(GroupTable.handle{idx});
+                                    Component = matlab.ui.internal.toolstrip.RadioButton(GroupTable.handle{idx});
 
                                 case 'DropDownButton'
-                                    popup = PopupList();
+                                    popup = matlab.ui.internal.toolstrip.PopupList();
                                     for mm = 1:numel(tempTable_COLUMN.Parameters{ll}.Children)
-                                        childComponent  = eval(tempTable_COLUMN.Parameters{ll}.Children(mm).Type);
+                                        childComponent  = eval(sprintf('matlab.ui.internal.toolstrip.%s', tempTable_COLUMN.Parameters{ll}.Children(mm).Type));
                                         childParameters = fields(tempTable_COLUMN.Parameters{ll}.Children(mm).Parameters);
                                         ComponentProperties(this, tempTable_COLUMN(ll,:), childParameters, childComponent, 'childComponent', mm)
 
                                         popup.add(childComponent)
                                     end
                                     
-                                    Component = matlab.ui.internal.toolstrip.DropDownButton(' Save ', matlab.ui.internal.toolstrip.Icon.SAVE_24);
+                                    Component = matlab.ui.internal.toolstrip.DropDownButton();
                                     Component.Popup = popup;
                             end
                             ComponentProperties(this, tempTable_COLUMN(ll,:), Parameters, Component, 'Component', -1)
@@ -262,7 +188,141 @@ classdef ContainerFrame < handle & dynamicprops
                 end
                 tabGroup.add(objStruct(ii).Tab)
             end
+        end
+
+
+        %-----------------------------------------------------------------%
+        function TabRemove(this, Tag, propPrefix)
+            
+            % Verifica se a aba existe...
+            tabGroup = this.Container.getTabGroup(class.Constants.appName);
+            try
+                hTab = tabGroup.getChildByTag(Tag);
+                tabGroup.remove(hTab);
+
+                if ~isempty(propPrefix)
+                    idx = find(contains(this.hDynamicProperties.id, propPrefix));
+                    for ii = numel(idx):-1:1
+                        this.hDynamicProperties.handle{idx(ii)}.delete
+                        this.hDynamicProperties(idx(ii),:) = [];
+                    end
+                end
+                return
+            catch
+            end
+        end
+
+
+        %-----------------------------------------------------------------%
+        function status = isValidObject(this, objType, objTag)
+
+            switch objType
+                case 'Panel'
+                    hPanelList = struct(struct(this.Container).PanelMap).serialization.values;
+                    if ismember(objTag, cellfun(@(x) x.Tag, hPanelList))
+                        Panel = hPanelList{strcmp(cellfun(@(x) x.Tag, hPanelList), objTag)};
+                        PanelFocus(this, hPanelList, Panel)
+        
+                        status = true;
+                    else
+                        status = false;
+                    end
+
+                case 'Figure'
+                    hFigureList = struct(struct(this.Container).DocumentMap).serialization.values;
+                    if ismember(objTag, cellfun(@(x) x.Tag, hFigureList))
+                        Figure = hFigureList{strcmp(cellfun(@(x) x.Tag, hFigureList), objTag)};
+                        PanelFocus(this, hFigureList, Figure)
+        
+                        status = true;
+                    else
+                        status = false;
+                    end
+            end
+        end
+
+
+        %-----------------------------------------------------------------%
+        function PanelCreation(this, Tag, Position)
+
+            Panel = matlab.ui.internal.FigurePanel(struct('Tag', Tag, 'Title', Tag, 'PermissibleRegions', Position, 'Region', Position, 'Maximizable', false, 'Opened', false));
+            obj = eval(sprintf('panel.%s_PanelCreation(this, Panel.Figure)', Tag));
+            
+            % Registra componentes do novo painel como propriedade do objeto
+            % "ContainerFrame".
+            objFields = fields(obj);
+            for ii = 1:numel(objFields)
+                this.registerComponents(sprintf('%s_%s', Tag, objFields{ii}), obj.(objFields{ii}))
+            end
+            this.Container.addPanel(Panel)
+        end
+
+
+        %-----------------------------------------------------------------%
+        function PanelFocus(this, Tag)
+
+            Panel = [];
+            hPanelList = struct(struct(this.Container).PanelMap).serialization.values;
+            
+            idx = find(strcmp(cellfun(@(x) x.Tag, struct(struct(this.Container).PanelMap).serialization.values), Tag), 1);
+            if ~isempty(idx)
+                Panel = hPanelList{idx};
+            end
+
+            for ii = 1:numel(hPanelList)
+                if isequal(hPanelList{ii}, Panel)
+                    hPanelList{ii}.Opened    = true;
+                    hPanelList{ii}.Selected  = true;
+                else
+                    hPanelList{ii}.Collapsed = true;
+                end
+            end
+
+            pause(.1)
+            customComponents_PanelTitle(this)
+        end
+
+
+        %-----------------------------------------------------------------%
+        function docFig = FigureCreation(this, Tag)
+            % C:\Program Files\MATLAB\R2022b\toolbox\matlab\uitools\uicomponents\components\+matlab\+ui\+internal\FigureDocumentGroup.m
+
+            docFig = matlab.ui.internal.FigureDocument();
+            set(docFig, DocumentGroupTag='Tabs', Tag=Tag, Title=Tag)
+
+            this.Container.addDocument(docFig)
+        end
+
+
+        %-----------------------------------------------------------------%
+        function delete(this)
+            if isappdata(groot, class.Constants.appName)
+                rmappdata(groot, class.Constants.appName);
+            end
+
+            delete(this)
+        end
+    end
+
+
+    methods (Access = private)
+        %-----------------------------------------------------------------%
+        % ## STARTUP ##
+        %-----------------------------------------------------------------%        
+        function startupBuilding_TabGroup(this, Tag)
+            tabGroup = matlab.ui.internal.toolstrip.TabGroup();
+            tabGroup.Tag = Tag;
+            tabGroup.SelectedTabChangedFcn = {@toolstrip.TabGroup_SelectedTabChanged, this};
+
             this.Container.addTabGroup(tabGroup)
+        end
+
+        %-----------------------------------------------------------------%
+        function startupBuilding_DocumentGroup(this)
+            % C:\Program Files\MATLAB\R2022b\toolbox\matlab\uitools\uicomponents\components\+matlab\+ui\+internal\FigureDocumentGroup.m
+
+            docGroup = matlab.ui.internal.FigureDocumentGroup(struct('Tag', 'Tabs', 'Title', 'Tabs'));
+            this.Container.add(docGroup)
         end
 
 
@@ -270,81 +330,9 @@ classdef ContainerFrame < handle & dynamicprops
         function startupBuilding_QuickAccessBar(this)
             % C:\Program Files\MATLAB\R2022b\toolbox\matlab\toolstrip\+matlab\+ui\+internal\+toolstrip\+qab
             helpButton = matlab.ui.internal.toolstrip.qab.QABHelpButton();
-            helpButton.ButtonPushedFcn = {@callbacks.toolQAB_Help, this};
+            helpButton.ButtonPushedFcn = {@toolstrip.QAB_Help, this};
 
             this.Container.add(helpButton) 
-        end
-
-
-        %-----------------------------------------------------------------%
-        function startupBuilding_FigureDocumentGroup(this)
-            % C:\Program Files\MATLAB\R2022b\toolbox\matlab\uitools\uicomponents\components\+matlab\+ui\+internal\FigureDocumentGroup.m
-
-            % Cria aqui as figuras inicialmente já criadas no app... talvez
-            % uma única figura com uma imagem pra preencher o vazio...
-
-            docGroupOptions = struct('Tag', 'Tabs', 'Title', 'Tabs');
-            docGroup = matlab.ui.internal.FigureDocumentGroup(docGroupOptions);
-
-            docFig1  = matlab.ui.internal.FigureDocument();
-            docFig2  = matlab.ui.internal.FigureDocument();
-            set(docFig1, DocumentGroupTag='Tabs', Tag='Figure1', Title='FIG 1', Closable=false)
-            set(docFig2, DocumentGroupTag='Tabs', Tag='Figure2', Title='FIG 2')
-
-            this.Container.add(docGroup)
-
-            this.Container.addDocument(docFig1)
-            this.Container.addDocument(docFig2)
-        end
-
-
-        %-----------------------------------------------------------------%
-        function startupBuilding_PanelGroup(this)
-            % A priori criarei apenas três painéis à esquerda do documento.
-            % É importante frisar, contudo, que ainda existe a possibilidade 
-            % de criar painéis à direita e abaixo do documento.
-
-            % PANEL 1: "FILE"
-            leftPanelOptions1      = struct('Tag', 'LeftPanel1',  'Title', 'File', 'PermissibleRegions', 'left',  'Region', 'left');
-            leftPanel1             = matlab.ui.internal.FigurePanel(leftPanelOptions1);
-
-            obj = createComponents.leftPanel_File(leftPanel1.Figure);
-            objFields = fields(obj);
-            for ii = 1:numel(objFields)
-                this.registerComponents(sprintf('leftPanel1_%s', objFields{ii}), obj.(objFields{ii}))
-            end
-
-            % PANEL 2: "SPECTRAL DATA"
-            leftPanelOptions2      = struct('Tag', 'LeftPanel2',  'Title', 'Spectral data', 'PermissibleRegions', 'left',  'Region', 'left');
-            leftPanel2             = matlab.ui.internal.FigurePanel(leftPanelOptions2);
-
-            obj = createComponents.leftPanel_SpectralData(leftPanel1.Figure);
-            objFields = fields(obj);
-            for ii = 1:numel(objFields)
-                this.registerComponents(sprintf('leftPanel2_%s', objFields{ii}), obj.(objFields{ii}))
-            end
-                        
-            % PANEL 3: "EMISSION"
-            leftPanelOptions3      = struct('Tag', 'LeftPanel3',  'Title', 'Emission', 'PermissibleRegions', 'left',  'Region', 'left');
-            leftPanel3             = matlab.ui.internal.FigurePanel(leftPanelOptions3);
-
-            obj = createComponents.leftPanel_Emission(leftPanel1.Figure);
-            objFields = fields(obj);
-            for ii = 1:numel(objFields)
-                this.registerComponents(sprintf('leftPanel3_%s', objFields{ii}), obj.(objFields{ii}))
-            end
-
-            % Final operations...
-            bottomPanel = [];
-            rightPanel  = [];
-
-            panelGroup  = {leftPanel1, leftPanel2, leftPanel3, bottomPanel, rightPanel};
-            panelGroup  = panelGroup(cellfun(@(x) ~isempty(x), panelGroup));
-
-            for ii = 1:numel(panelGroup)
-                this.Container.addPanel(panelGroup{ii})
-                panelGroup{ii}.Collapsed = true;
-            end
         end
 
 
@@ -363,12 +351,11 @@ classdef ContainerFrame < handle & dynamicprops
         %-----------------------------------------------------------------%
         function appStateChangedCallback(this, ~, ~)
             % Os estados de um objeto "AppContainer" são definidos por uma
-            % enumeração. Fluxos de estados:
+            % enumeração. Fluxo:
             % INITIALIZING >> RUNNING >> TERMINATED
             switch this.Container.State
                 case matlab.ui.container.internal.appcontainer.AppState.RUNNING
                     this.hWebWindow = struct(this.Container).Window;
-                    customComponents_PanelTitle(this)
 
                 case matlab.ui.container.internal.appcontainer.AppState.TERMINATED
                     delete(this);
@@ -395,8 +382,6 @@ classdef ContainerFrame < handle & dynamicprops
         % ## PARSING TOOLSTRIP CONFIG FILE (JSON) ##
         %-----------------------------------------------------------------%
         function ComponentProperties(this, tempTable_COLUMN, Parameters, Component, Tag, idx)
-            
-            import matlab.ui.internal.toolstrip.*
 
             for ii = 1:numel(Parameters)
                 switch Tag
@@ -408,18 +393,15 @@ classdef ContainerFrame < handle & dynamicprops
 
                 switch Parameters{ii}
                     case {'ButtonPushedFcn', 'ValueChangedFcn', 'ItemPushedFcn'}
-                        parameterValue = {str2func(sprintf('callbacks.%s', parameterValue)), this};
-
+                        parameterValue = {str2func(parameterValue), this};
                     case 'Icon'
                         if strcmp(parameterValue(1:5), 'Icon.')
-                            parameterValue = eval(parameterValue);
+                            parameterValue = eval(sprintf('matlab.ui.internal.toolstrip.%s', parameterValue));
                         end
-
                     case {'Items', 'maxRows', 'maxColumns', 'Children'}
                         % Properties that must be passing into the constructor
                         continue
                 end
-
                 Component.(Parameters{ii}) = parameterValue;
             end
         end
@@ -430,8 +412,8 @@ classdef ContainerFrame < handle & dynamicprops
         function customComponents_PanelTitle(this)
 
             jsCommand = sprintf(['var elements = document.querySelectorAll(''span[class="title"]'');\n' ...
-                                 'for (let ii = 0; ii < elements.length; ii++) {\n' ...
-                                 '\telements[ii].style.fontSize = "11px";\n' ...
+                                 'for (let ii = 0; ii < elements.length; ii++) {\n'                     ...
+                                 '\telements[ii].style.fontSize = "11px";\n'                            ...
                                  '}\nelements = undefined;']);
 
             pause(.001)

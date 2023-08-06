@@ -1,0 +1,222 @@
+{
+  "Tab": {
+    "REPORT": [
+      "Report",
+      "Detection",
+      "Findpeaks parameters",
+      "Classification",
+      "Drive-test"
+    ]
+  },
+  "Components": [
+    {
+      "Type": "Button",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 1111,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Text": " Run  ",
+        "Icon": "Icon.RUN_24",
+        "ButtonPushedFcn": "toolstrip.Report_Run"
+      }
+    },
+    {
+      "Type": "Button",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 1211,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Text": "Add\nEmission",
+        "Icon": "Icon.NEW_24",
+        "ButtonPushedFcn": "toolstrip.Report_AddEmission"
+      }
+    },
+    {
+      "Type": "RadioButton",
+      "Group": "emissionGroup1",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 1221,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Text": "Automatic findpeaks",
+        "Value": true
+      }
+    },
+    {
+      "Type": "RadioButton",
+      "Group": "emissionGroup1",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 1222,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Text": "Manual ROI",
+        "Value": false,
+        "ValueChangedFcn": "toolstrip.Report_DetectionType"
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 1311,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Text": "Number of peaks: "
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 1312,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Text": "Prominence (dB): "
+      }
+    },
+    {
+      "Type": "Spinner",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "Report_emissionNPeaks",
+      "PositionID": 1321,
+      "ColumnWidth": "90",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Limits": [
+          1,
+          100
+        ],
+        "Value": 10
+      }
+    },
+    {
+      "Type": "Spinner",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "Report_emissionProminence",
+      "PositionID": 1322,
+      "ColumnWidth": "90",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Limits": [
+          3,
+          50
+        ],
+        "Value": 30
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 1331,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Text": "Separation (kHz): "
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 1332,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Text": "Width (kHz): "
+      }
+    },
+    {
+      "Type": "Spinner",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "Report_emissionSeparation",
+      "PositionID": 1341,
+      "ColumnWidth": "90",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Limits": [
+          5,
+          6000
+        ],
+        "Value": 25
+      }
+    },
+    {
+      "Type": "Spinner",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "Report_emissionWidth",
+      "PositionID": 1342,
+      "ColumnWidth": "90",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Limits": [
+          0,
+          100000
+        ],
+        "Value": 10
+      }
+    },
+    {
+      "Type": "Button",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "Report_emissionClassification",
+      "PositionID": 1411,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Text": "Classification",
+        "Icon": "list_16.png",
+        "ButtonPushedFcn": "toolstrip.Report_Classification"
+      }
+    },
+    {
+      "Type": "Button",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "Report_emissionDatabase",
+      "PositionID": 1412,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Text": "Database",
+        "Icon": "database_16.png",
+        "ButtonPushedFcn": "toolstrip.Report_Database"
+      }
+    },
+    {
+      "Type": "Button",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "Report_emissionDriveTest",
+      "PositionID": 1511,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Text": "Drive-test",
+        "Icon": "DriveTest_24.png",
+        "ButtonPushedFcn": "toolstrip.Report_DriveTest"
+      }
+    }
+  ]
+}

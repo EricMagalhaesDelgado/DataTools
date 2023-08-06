@@ -20,6 +20,9 @@ classdef (Abstract) Constants
         specDataTypes = [1, 2, 4, 7, 60, 61, 63, 64, 67, 68, 167, 168, 1000, 1809];
         occDataTypes  = [8, 62, 65, 69];
 
+        averageFcn    = 'mean'                                              % 'mean' | 'median' | 'mode'
+        mergeDistance = 100                                                 % meters
+
 
         % Inserir como constantes os valores relacionados à OCC do
         % offset-noise level (80% method), descartando os valores muito

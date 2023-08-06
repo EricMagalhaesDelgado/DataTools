@@ -1,0 +1,600 @@
+{
+  "Tab": {
+    "PLAYBACK": [
+      "Playback",
+      "xy-Limits",
+      "Controls",
+      "Persistance",
+      "Occupancy",
+      "Waterfall"
+    ]
+  },
+  "Components": [
+    {
+      "Type": "Button",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "Playback_Play",
+      "PositionID": 1111,
+      "ColumnWidth": "40",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Text": "Play",
+        "Icon": "Icon.RUN_24",
+        "ButtonPushedFcn": "toolstrip.Playback_Play"
+      }
+    },
+    {
+      "Type": "DropDownButton",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "Playback_Save",
+      "PositionID": 1121,
+      "ColumnWidth": "40",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Children": [
+          {
+            "Type": "ListItem",
+            "Parameters": {
+              "Text": "Export image",
+              "Icon": "Icon.EXPORT_16",
+              "ItemPushedFcn": "toolstrip.Playback_Save"
+            }
+          },
+          {
+            "Type": "ListItem",
+            "Parameters": {
+              "Text": "Save parameters",
+              "Icon": "report_16.png",
+              "ItemPushedFcn": "toolstrip.Playback_Save"
+            }
+          }
+        ],
+        "Text": " Save ",
+        "Icon": "Icon.SAVE_24"
+      }
+    },
+    {
+      "Type": "Spinner",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "Playback_xLim1",
+      "PositionID": 1211,
+      "ColumnWidth": "90",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Limits": [
+          0,
+          6000
+        ],
+        "Value": 0,
+        "NumberFormat": "double",
+        "DecimalFormat": "3f",
+        "ValueChangedFcn": "toolstrip.Playback_xyLimits"
+      }
+    },
+    {
+      "Type": "Spinner",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "Playback_yLim1",
+      "PositionID": 1212,
+      "ColumnWidth": "90",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Limits": [
+          -120,
+          0
+        ],
+        "Value": -120,
+        "NumberFormat": "double",
+        "DecimalFormat": "0f",
+        "ValueChangedFcn": "toolstrip.Playback_xyLimits"
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 1221,
+      "ColumnWidth": "20",
+      "ColumnAlign": "center",
+      "Parameters": {
+        "Text": "x "
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 1222,
+      "ColumnWidth": "20",
+      "ColumnAlign": "center",
+      "Parameters": {
+        "Text": "y "
+      }
+    },
+    {
+      "Type": "Spinner",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "Playback_xLim2",
+      "PositionID": 1231,
+      "ColumnWidth": "90",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Limits": [
+          0,
+          6000
+        ],
+        "Value": 6000,
+        "NumberFormat": "double",
+        "DecimalFormat": "3f",
+        "ValueChangedFcn": "toolstrip.Playback_xyLimits"
+      }
+    },
+    {
+      "Type": "Spinner",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "Playback_yLim2",
+      "PositionID": 1232,
+      "ColumnWidth": "90",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Limits": [
+          -120,
+          0
+        ],
+        "Value": 0,
+        "NumberFormat": "double",
+        "DecimalFormat": "0f",
+        "ValueChangedFcn": "toolstrip.Playback_xyLimits"
+      }
+    },
+    {
+      "Type": "ToggleButton",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "Playback_MinHold",
+      "PositionID": 1311,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Text": "Min Hold",
+        "Icon": "MinHold_16.png",
+        "ValueChangedFcn": "toolstrip.Playback_Controls"
+      }
+    },
+    {
+      "Type": "ToggleButton",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "Playback_Persistance",
+      "PositionID": 1312,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Text": "Persistance",
+        "Icon": "Persistance_16.png",
+        "ValueChangedFcn": "toolstrip.Playback_Controls"
+      }
+    },
+    {
+      "Type": "ToggleButton",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "Playback_Average",
+      "PositionID": 1321,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Text": "Average",
+        "Icon": "Average_16.png",
+        "ValueChangedFcn": "toolstrip.Playback_Controls"
+      }
+    },
+    {
+      "Type": "ToggleButton",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "Playback_OCC",
+      "PositionID": 1322,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Text": "Occupancy",
+        "Icon": "OCC_16.png",
+        "ValueChangedFcn": "toolstrip.Playback_Controls"
+      }
+    },
+    {
+      "Type": "ToggleButton",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "Playback_MaxHold",
+      "PositionID": 1331,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Text": "Max Hold",
+        "Icon": "MaxHold_16.png",
+        "ValueChangedFcn": "toolstrip.Playback_Controls"
+      }
+    },
+    {
+      "Type": "ToggleButton",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "Playback_Waterfall",
+      "PositionID": 1332,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Text": "Waterfall",
+        "Icon": "Waterfall_16.png",
+        "ValueChangedFcn": "toolstrip.Playback_Controls"
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "Playback_winSizeLabel",
+      "PositionID": 1411,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "left",
+      "Parameters": {
+        "Text": "Window size: "
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "Playback_ColormapLabel",
+      "PositionID": 1412,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "left",
+      "Parameters": {
+        "Text": "Colormap: "
+      }
+    },
+    {
+      "Type": "DropDown",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "Playback_persistanceWinSize",
+      "PositionID": 1421,
+      "ColumnWidth": "90",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Items": [
+          "128",
+          "256",
+          "512",
+          "full"
+        ],
+        "Value": "full",
+        "ValueChangedFcn": "toolstrip.Playback_Persistance"
+      }
+    },
+    {
+      "Type": "DropDown",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "Playback_persistanceColormap",
+      "PositionID": 1422,
+      "ColumnWidth": "90",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Items": [
+          "winter",
+          "parula",
+          "turbo"
+        ],
+        "Value": "winter",
+        "ValueChangedFcn": "toolstrip.Playback_Persistance"
+      }
+    },
+    {
+      "Type": "Spinner",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "Playback_persistanceLim1",
+      "PositionID": 1431,
+      "ColumnWidth": "90",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Limits": [
+          0,
+          100
+        ],
+        "Value": 0,
+        "NumberFormat": "double",
+        "DecimalFormat": "3f",
+        "ValueChangedFcn": "toolstrip.Playback_Persistance"
+      }
+    },
+    {
+      "Type": "ToggleButton",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "Playback_persistanceRefresh",
+      "PositionID": 1432,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Text": "c-Limits",
+        "Icon": "refresh_16.png",
+        "ValueChangedFcn": "toolstrip.Playback_Persistance"
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 1441,
+      "ColumnWidth": "10",
+      "ColumnAlign": "left",
+      "Parameters": {
+        "Text": "c "
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 1442,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Text": ""
+      }
+    },
+    {
+      "Type": "Spinner",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "Playback_persistanceLim2",
+      "PositionID": 1451,
+      "ColumnWidth": "90",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Limits": [
+          0,
+          100
+        ],
+        "Value": 100,
+        "NumberFormat": "double",
+        "DecimalFormat": "3f",
+        "ValueChangedFcn": "toolstrip.Playback_Persistance"
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 1452,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Text": ""
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "Playback_occTypeLabel",
+      "PositionID": 1511,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "left",
+      "Parameters": {
+        "Text": "Threshold type: "
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "Playback_occValueLabel",
+      "PositionID": 1512,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "left",
+      "Parameters": {
+        "Text": "Value: "
+      }
+    },
+    {
+      "Type": "DropDown",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "Playback_occType",
+      "PositionID": 1521,
+      "ColumnWidth": "90",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Items": [
+          "linear",
+          "offset"
+        ],
+        "Value": "linear",
+        "ValueChangedFcn": "toolstrip.Playback_Occupancy"
+      }
+    },
+    {
+      "Type": "Spinner",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "Playback_occValue",
+      "PositionID": 1522,
+      "ColumnWidth": "90",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Limits": [
+          -120,
+          0
+        ],
+        "Value": -80,
+        "NumberFormat": "double",
+        "DecimalFormat": "0f",
+        "ValueChangedFcn": "toolstrip.Playback_Occupancy"
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 1611,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "left",
+      "Parameters": {
+        "Text": "Direction: "
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 1612,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "left",
+      "Parameters": {
+        "Text": "Colormap: "
+      }
+    },
+    {
+      "Type": "DropDown",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "Playback_waterfallDirection",
+      "PositionID": 1621,
+      "ColumnWidth": "90",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Items": [
+          "both",
+          "column",
+          "row"
+        ],
+        "Value": "both",
+        "ValueChangedFcn": "toolstrip.Playback_Waterfall"
+      }
+    },
+    {
+      "Type": "DropDown",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "Playback_waterfallColormap",
+      "PositionID": 1622,
+      "ColumnWidth": "90",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Items": [
+          "winter",
+          "parula",
+          "turbo"
+        ],
+        "Value": "winter",
+        "ValueChangedFcn": "toolstrip.Playback_Waterfall"
+      }
+    },
+    {
+      "Type": "Spinner",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "Playback_waterfallLim1",
+      "PositionID": 1631,
+      "ColumnWidth": "90",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Limits": [
+          -120,
+          0
+        ],
+        "Value": -120,
+        "NumberFormat": "double",
+        "DecimalFormat": "0f",
+        "ValueChangedFcn": "toolstrip.Playback_Waterfall"
+      }
+    },
+    {
+      "Type": "ToggleButton",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "Playback_waterfallRefresh",
+      "PositionID": 1632,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Text": "c-Limits",
+        "Icon": "refresh_16.png",
+        "ValueChangedFcn": "toolstrip.Playback_Waterfall"
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 1641,
+      "ColumnWidth": "10",
+      "ColumnAlign": "left",
+      "Parameters": {
+        "Text": "c "
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 1642,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Text": ""
+      }
+    },
+    {
+      "Type": "Spinner",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "Playback_waterfallLim2",
+      "PositionID": 1651,
+      "ColumnWidth": "90",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Limits": [
+          -120,
+          0
+        ],
+        "Value": 0,
+        "NumberFormat": "double",
+        "DecimalFormat": "0f",
+        "ValueChangedFcn": "toolstrip.Playback_Waterfall"
+      }
+    },
+    {
+      "Type": "Label",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 1652,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Text": ""
+      }
+    }
+  ]
+}

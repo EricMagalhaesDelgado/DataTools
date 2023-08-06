@@ -1,0 +1,67 @@
+{
+  "Tab": {
+    "FILE": [
+      "Read",
+      "Operations"
+    ]
+  },
+  "Components": [
+    {
+      "Type": "Button",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 1111,
+      "ColumnWidth": "40",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Text": "Open\nFile",
+        "Icon": "Icon.OPEN_24",
+        "ButtonPushedFcn": "toolstrip.File_Open"
+      }
+    },
+    {
+      "Type": "Button",
+      "Group": "",
+      "appProperty": 1,
+      "appPropertyName": "File_SpectralData",
+      "PositionID": 1121,
+      "ColumnWidth": "40",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Text": "Spectral\nData",
+        "Icon": "playback_24.png",
+        "Enabled": false,
+        "ButtonPushedFcn": "toolstrip.File_SpectralData"
+      }
+    },
+    {
+      "Type": "Button",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 1211,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Text": "Edit location",
+        "Icon": "edit_16.png",
+        "ButtonPushedFcn": "toolstrip.File_Operations"
+      }
+    },
+    {
+      "Type": "Button",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 1212,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "Text": "Export",
+        "Icon": "Icon.EXPORT_16",
+        "ButtonPushedFcn": "toolstrip.File_Operations"
+      }
+    }
+  ]
+}
