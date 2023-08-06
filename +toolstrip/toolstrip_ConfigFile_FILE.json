@@ -2,7 +2,8 @@
   "Tab": {
     "FILE": [
       "Read",
-      "Operations"
+      "Operations",
+      "Apps"
     ]
   },
   "Components": [
@@ -61,6 +62,80 @@
         "Text": "Export",
         "Icon": "Icon.EXPORT_16",
         "ButtonPushedFcn": "toolstrip.File_Operations"
+      }
+    },
+    {
+      "Type": "Gallery",
+      "Group": "",
+      "appProperty": 0,
+      "appPropertyName": "",
+      "PositionID": 1311,
+      "ColumnWidth": "auto",
+      "ColumnAlign": "auto",
+      "Parameters": {
+        "MaxColumnCount": 5,
+        "Children": [
+          {
+            "Type": "GalleryItem",
+            "Group": "My category 1",
+            "Parameters": {
+              "Text": "Import",
+              "Icon": "Icon.IMPORT_24",
+              "Description": "Description 1...",
+              "ItemPushedFcn": "toolstrip.File_Gallery"
+            }
+          },
+          {
+            "Type": "GalleryItem",
+            "Group": "My category 1",
+            "Parameters": {
+              "Text": "Export",
+              "Icon": "Icon.EXPORT_24",
+              "Description": "Description 1...",
+              "ItemPushedFcn": "toolstrip.File_Gallery"
+            }
+          },
+          {
+            "Type": "GalleryItem",
+            "Group": "My category 2",
+            "Parameters": {
+              "Text": "Print",
+              "Icon": "Icon.PRINT_24",
+              "Description": "Description 1...",
+              "ItemPushedFcn": "toolstrip.File_Gallery"
+            }
+          },
+          {
+            "Type": "GalleryItem",
+            "Group": "My category 2",
+            "Parameters": {
+              "Text": "Properties",
+              "Icon": "Icon.PROPERTIES_24",
+              "Description": "Description 1...",
+              "ItemPushedFcn": "toolstrip.File_Gallery"
+            }
+          },
+          {
+            "Type": "GalleryItem",
+            "Group": "My category 2",
+            "Parameters": {
+              "Text": "Lock",
+              "Icon": "Icon.LOCK_24",
+              "Description": "Description 1...",
+              "ItemPushedFcn": "toolstrip.File_Gallery"
+            }
+          },
+          {
+            "Type": "GalleryItem",
+            "Group": "My category 2",
+            "Parameters": {
+              "Text": "GoTo",
+              "Icon": "Icon.GOTO_24",
+              "Description": "Description 1...",
+              "ItemPushedFcn": "toolstrip.File_Gallery"
+            }
+          }
+        ]
       }
     }
   ]

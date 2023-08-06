@@ -175,6 +175,27 @@ classdef ContainerFrame < handle & dynamicprops
                                     
                                     Component = matlab.ui.internal.toolstrip.DropDownButton();
                                     Component.Popup = popup;
+
+                                case 'Gallery'
+                                    popup = matlab.ui.internal.toolstrip.GalleryPopup();
+
+                                    [categoryList, ~, categoryIndex] = unique({tempTable_COLUMN.Parameters{ll}.Children.Group});
+                                    for mm = 1:numel(categoryList)
+                                        categoryMember = matlab.ui.internal.toolstrip.GalleryCategory(categoryList{mm});
+
+                                        idx = find(categoryIndex == mm)';
+                                        for nn = idx
+                                            childComponent  = eval(sprintf('matlab.ui.internal.toolstrip.%s', tempTable_COLUMN.Parameters{ll}.Children(nn).Type));
+                                            childParameters = fields(tempTable_COLUMN.Parameters{ll}.Children(nn).Parameters);
+                                            ComponentProperties(this, tempTable_COLUMN(ll,:), childParameters, childComponent, 'childComponent', nn)
+    
+                                            categoryMember.add(childComponent)
+                                        end
+                                        
+                                        popup.add(categoryMember)
+                                    end
+                                    
+                                    Component = matlab.ui.internal.toolstrip.Gallery(popup, 'MaxColumnCount', tempTable_COLUMN.Parameters{ll}.MaxColumnCount);
                             end
                             ComponentProperties(this, tempTable_COLUMN(ll,:), Parameters, Component, 'Component', -1)
                             Column.add(Component)
@@ -398,7 +419,7 @@ classdef ContainerFrame < handle & dynamicprops
                         if strcmp(parameterValue(1:5), 'Icon.')
                             parameterValue = eval(sprintf('matlab.ui.internal.toolstrip.%s', parameterValue));
                         end
-                    case {'Items', 'maxRows', 'maxColumns', 'Children'}
+                    case {'Items', 'maxRows', 'maxColumns', 'Children', 'MaxColumnCount'}
                         % Properties that must be passing into the constructor
                         continue
                 end
