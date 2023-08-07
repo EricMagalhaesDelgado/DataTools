@@ -6,6 +6,9 @@ function SpectralData_TreeBuilding(app)
     app.SpectralData_Metadata.HTMLSource = ' ';
                 
     if numel(app.specData)
+        app.File_EditLocation.Enabled = true;
+        app.File_Export.Enabled       = true;
+
         TabCreation(app, 'PLAYBACK')
         TabCreation(app, 'REPORT')
         
@@ -83,6 +86,9 @@ function SpectralData_TreeBuilding(app)
         end
 
     else
+        app.File_EditLocation.Enabled = false;
+        app.File_Export.Enabled       = false;
+
         TabRemove(app, 'PLAYBACK', 'Playback_')
         TabRemove(app, 'REPORT',   'Report_')
     end
