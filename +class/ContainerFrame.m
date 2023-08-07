@@ -1,4 +1,4 @@
-classdef ContainerFrame < handle & dynamicprops
+classdef ContainerFrame < dynamicprops
 
     properties
         %-----------------------------------------------------------------%
@@ -90,9 +90,9 @@ classdef ContainerFrame < handle & dynamicprops
             % Objetos "GROUP"
             Groups = unique(CompTable.Group);
             GroupTable = table('Size', [0,2], 'VariableTypes', {'cell', 'cell'}, 'VariableNames', {'name', 'handle'});
-            for ii = 1:numel(Groups)
-                if ~isempty(Groups{ii})
-                    GroupTable(end+1,:) = {Groups{ii}, {matlab.ui.internal.toolstrip.ButtonGroup()}};
+            for ii2 = 1:numel(Groups)
+                if ~isempty(Groups{ii2})
+                    GroupTable(end+1,:) = {Groups{ii2}, {matlab.ui.internal.toolstrip.ButtonGroup()}};
                 end
             end
 
@@ -136,17 +136,11 @@ classdef ContainerFrame < handle & dynamicprops
                             Parameters = fields(tempTable_COLUMN.Parameters{ll});
 
                             switch tempTable_COLUMN.Type{ll}
-                                case 'Button'
-                                    Component = matlab.ui.internal.toolstrip.Button();
+                                case {'Button', 'Label', 'CheckBox', 'ListItemWithCheckBox', 'Spinner'}
+                                    Component = eval(sprintf('matlab.ui.internal.toolstrip.%s()', tempTable_COLUMN.Type{ll}));
                                 
                                 case 'GridPickerButton'
                                     Component = matlab.ui.internal.toolstrip.GridPickerButton('', tempTable_COLUMN.Parameters{ll}.maxRows, tempTable_COLUMN.Parameters{ll}.maxColumns);
-                                
-                                case 'Label'
-                                    Component = matlab.ui.internal.toolstrip.Label();
-                                
-                                case 'Spinner'
-                                    Component = matlab.ui.internal.toolstrip.Spinner();
                                 
                                 case 'DropDown'
                                     Component = matlab.ui.internal.toolstrip.DropDown(tempTable_COLUMN.Parameters{ll}.Items);
@@ -159,11 +153,11 @@ classdef ContainerFrame < handle & dynamicprops
                                         Component = matlab.ui.internal.toolstrip.ToggleButton('', GroupTable.handle{idx});
                                     end
 
-                                case 'RadioButton'
+                                case {'RadioButton', 'ListItemWithRadioButton'}
                                     idx = find(strcmp(GroupTable.name, tempTable_COLUMN.Group{ll}), 1);
-                                    Component = matlab.ui.internal.toolstrip.RadioButton(GroupTable.handle{idx});
+                                    Component = eval(sprintf('matlab.ui.internal.toolstrip.%s(GroupTable.handle{idx})', tempTable_COLUMN.Type{ll}));
 
-                                case 'DropDownButton'
+                                case {'DropDownButton', 'SplitButton'}
                                     popup = matlab.ui.internal.toolstrip.PopupList();
                                     for mm = 1:numel(tempTable_COLUMN.Parameters{ll}.Children)
                                         childComponent  = eval(sprintf('matlab.ui.internal.toolstrip.%s', tempTable_COLUMN.Parameters{ll}.Children(mm).Type));
@@ -173,7 +167,7 @@ classdef ContainerFrame < handle & dynamicprops
                                         popup.add(childComponent)
                                     end
                                     
-                                    Component = matlab.ui.internal.toolstrip.DropDownButton();
+                                    Component = eval(sprintf('matlab.ui.internal.toolstrip.%s()', tempTable_COLUMN.Type{ll}));
                                     Component.Popup = popup;
 
                                 case 'Gallery'
@@ -361,7 +355,7 @@ classdef ContainerFrame < handle & dynamicprops
         function startupBuilding_StatusBar(this)
             % C:\Program Files\MATLAB\R2022b\toolbox\matlab\appcontainer\+matlab\+ui\+internal\+statusbar\StatusBar.m
             
-            statusLabel = matlab.ui.internal.statusbar.StatusLabel(struct('Icon', 'info_16.png', 'Text', 'Select files to read...', 'Region', 'left'));
+            statusLabel = matlab.ui.internal.statusbar.StatusLabel(struct('Icon', 'info_16.png', 'Text', 'Status bar...', 'Region', 'left'));
             statusBar   = matlab.ui.internal.statusbar.StatusBar();
             statusBar.add(statusLabel)
 
@@ -393,6 +387,8 @@ classdef ContainerFrame < handle & dynamicprops
 
             if ~ismember(propName, this.hDynamicProperties.id)
                 propHandle = addprop(this, propName);
+                propHandle.Hidden = true;
+
                 this.hDynamicProperties{end+1,:} = {propName, propHandle};
             end
             this.(propName) = propObj;

@@ -39,28 +39,30 @@
     {
       "Type": "Button",
       "Group": "",
-      "appProperty": 0,
-      "appPropertyName": "",
+      "appProperty": 1,
+      "appPropertyName": "File_EditLocation",
       "PositionID": 1211,
       "ColumnWidth": "auto",
       "ColumnAlign": "auto",
       "Parameters": {
         "Text": "Edit location",
         "Icon": "edit_16.png",
+        "Enabled": false,
         "ButtonPushedFcn": "toolstrip.File_Operations"
       }
     },
     {
       "Type": "Button",
       "Group": "",
-      "appProperty": 0,
-      "appPropertyName": "",
+      "appProperty": 1,
+      "appPropertyName": "File_Export",
       "PositionID": 1212,
       "ColumnWidth": "auto",
       "ColumnAlign": "auto",
       "Parameters": {
         "Text": "Export",
         "Icon": "Icon.EXPORT_16",
+        "Enabled": false,
         "ButtonPushedFcn": "toolstrip.File_Operations"
       }
     },
